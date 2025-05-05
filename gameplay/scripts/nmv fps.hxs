@@ -1,0 +1,94 @@
+import haxe.Timer;
+import lime.system.System;
+
+import openfl.display.Sprite;
+import openfl.display.Bitmap;
+import openfl.display.BitmapData;
+
+import openfl.text.TextField;
+import openfl.text.TextFormat;
+
+import flixel.util.FlxStringUtil;
+
+import funkin.backend.Main;
+import funkin.utilities.MemoryUtil;
+
+var shit:Sprite;
+var underlay:Bitmap;
+var text:TextField;
+
+var currentFPS:Int = 0;
+var times:Array<Float> = [];
+
+var deltaTimeout:Float = 100;
+
+function onCreate() {
+    if(!Options.fpsCounter) {
+        closeScript();
+        return;
+    }
+    trace("INIT FPS COUNTER");
+    Main.statsDisplay.visible = false;
+
+    shit = new Sprite();
+    shit.x = 10;
+    shit.y = 3;
+    shit.addEventListener("enterFrame", onEnterFrame);
+    Main.instance.addChild(shit);
+
+    underlay = new Bitmap();
+    underlay.bitmapData = new BitmapData(1, 1, true, 0x6F000000);
+    shit.addChild(underlay);
+
+    text = new TextField();
+    shit.addChild(text);
+
+    currentFPS = 0;
+    text.selectable = false;
+    text.mouseEnabled = false;
+    text.defaultTextFormat = new TextFormat(Paths.font("fonts/vcr"), 16, 0xFFFFFF);
+    text.autoSize = 1; // 1 = left
+    text.multiline = true;
+    text.text = "FPS: ";
+}
+
+function onEnterFrame(e) {
+    final now:Float = Timer.stamp() * 1000;
+    times.push(now);
+    
+    while(times[0] < now - 1000)
+        times.shift();
+    
+    currentFPS = times.length;
+    if(currentFPS > FlxG.drawFramerate)
+        currentFPS = FlxG.drawFramerate;
+    
+    if(deltaTimeout < 100) {
+        final nowNow:Float = Timer.stamp() * 1000;
+        deltaTimeout += (nowNow - now) * 1000;
+        return;
+    }
+    updateText();
+    underlay.width = text.width + 5;
+	underlay.height = text.height;
+
+    deltaTimeout = 0;
+}
+
+function updateText() {
+    text.text = "FPS: " + currentFPS + " • Memory: " + FlxStringUtil.formatBytes(MemoryUtil.currentMemUsage());
+
+	if(currentFPS < FlxG.drawFramerate * 0.5)
+        text.textColor = 0xFFFF0000;
+    else
+        text.textColor = 0xFFFFFFFF;
+}
+
+function onDestroy() {
+    shit.removeEventListener("enterFrame", onEnterFrame);
+    shit.removeChild(underlay);
+    shit.removeChild(text);
+    
+    Main.instance.removeChild(shit);
+    Main.statsDisplay.visible = Options.fpsCounter;
+}

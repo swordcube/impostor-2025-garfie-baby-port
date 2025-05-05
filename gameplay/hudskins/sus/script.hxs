@@ -5,6 +5,7 @@ var showRating:Bool = true;
 var showCombo:Bool = true;
 var ratingText:FlxText;
 var ratingScores:FlxTypedGroup<FlxText>;
+var botplayTxt:FlxText;
 
 final customTextMap:Map<String, String> = [
     "killer" => "SUSSY!",
@@ -57,7 +58,7 @@ function generatePlayerStats() {
     // scoreTxt.borderSize = 1.25;
     add(scoreTxt);
     
-    ratingText = new FlxText(0, Options.downscroll ? FlxG.height * 0.8 : FlxG.height * 0.1, FlxG.width, '');
+    ratingText = new FlxText(0, Options.downscroll ? FlxG.height * 0.8 : FlxG.height * 0.1, 200, '');
     ratingText.setFormat(Paths.font("fonts/bahn"), 48, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
     ratingText.screenCenter(FlxAxes.X);
     ratingText.borderSize = 2.5;
@@ -71,6 +72,12 @@ function generatePlayerStats() {
         ratingScores.add(num);
         num.kill();
     }
+    botplayTxt = new FlxText(0, 525, FlxG.width, "BOTPLAY", 32);
+    botplayTxt.setFormat(Paths.font("fonts/liber"), 32, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    botplayTxt.borderSize = 1.25;
+    botplayTxt.screenCenter(FlxAxes.X);
+    botplayTxt.visible = playField.playerStrumLine.botplay;
+    add(botplayTxt);
 }
 
 function updatePlayerStats(stats) {
@@ -89,6 +96,7 @@ function updatePlayerStats(stats) {
         + 'Rank: ' + str;
         
     scoreTxt.text = tempScore + "\n";
+    botplayTxt.visible = playField.playerStrumLine.botplay;
 }
 
 function onCreatePost() {
