@@ -1,8 +1,5 @@
 import openfl.filters.ShaderFilter;
 
-var defaultCamZoom:Float = 0.5;
-var zoomTween:FlxTween;
-
 var snowAlpha = 0;
 var ext:String = 'gameplay/stages/polus/images/'; // Edit polus to your stage name.
 var vignette:FlxSprite;
@@ -213,8 +210,8 @@ function onEvent(e) {
                 case 'camRight':
                     game.isCameraOnForcedPos = true;
                     FlxTween.tween(game.camFollow, {x: 1600, y: 525}, 5, {ease: FlxEase.smootherStepInOut});
-                    defaultCamZoom = 0.5;
                     FlxTween.tween(FlxG.camera, {zoom: 0.5}, 1, {ease: FlxEase.smootherStepInOut});
+                    defaultCamZoom = 0.5;
 
                 case 'evilgreen':
                     game.playField.cameras = [anotherCam];
