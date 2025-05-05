@@ -1,0 +1,3 @@
+function onLoadPost() {
+    danceInterval = 2; // too lazy to add to config json, lol!
+}

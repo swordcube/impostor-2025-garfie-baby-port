@@ -1,0 +1,47 @@
+import openfl.display.BlendMode;
+import funkin.gameplay.character.Character;
+
+var lastNoteOpp:Note = null;
+var lastNotePlr:Note = null;
+var movementShit:Map<Int, FlxPoint> = [
+    0 => new FlxPoint(-45, 0),
+    1 => new FlxPoint(0, 45),
+    2 => new FlxPoint(0, -45),
+    3 => new FlxPoint(45, 0)
+];
+
+function onOpponentHit(e) {
+    if(lastNoteOpp != null && Math.abs(lastNoteOpp.time - e.note.time) < 2 && lastNoteOpp.direction != e.note.direction) {
+        for(character in e.characters)
+            makeTrail(character, lastNoteOpp.direction);
+    }
+    lastNoteOpp = e.note;
+}
+
+function onPlayerHit(e) {
+    if(lastNotePlr != null && Math.abs(lastNotePlr.time - e.note.time) < 2 && lastNotePlr.direction != e.note.direction) {
+        for(character in e.characters)
+            makeTrail(character, lastNotePlr.direction);
+    }
+    lastNotePlr = e.note;
+}
+
+function makeTrail(character:Character, direction:Int) {
+    var trail:Character = new Character(character.characterID, character.isPlayer, character.debugMode);
+    trail.setPosition(character.x, character.y);
+    trail.footOffset.set(character.footOffset.x, character.footOffset.y);
+    trail.playSingAnim(direction);
+    trail.animation.finish();
+    trail.canDance = false;
+    trail.blend = BlendMode.HARDLIGHT;
+    trail.alpha = character.alpha * 0.8;
+    trail.color = character.healthColor;
+    character.container.insert(character.container.members.indexOf(character), trail);
+
+    var movementPoint:FlxPoint = movementShit.get(direction);
+    FlxTween.tween(trail, {x: trail.x + movementPoint.x, y: trail.y + movementPoint.y}, 0.75);
+    FlxTween.tween(trail, {alpha: 0}, 0.75, {onComplete: (_) -> {
+        trail.container.remove(trail, true);
+        trail.destroy();
+    }});
+}

@@ -1,0 +1,3 @@
+function onCreatePost() {
+    playField.opponentStrumLine.skin = "sus_red";
+}

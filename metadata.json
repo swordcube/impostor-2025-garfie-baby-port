@@ -1,0 +1,26 @@
+{
+    "apiVersion": "0.1.0",
+    "allowUnsafeScripts": true,
+    "levels": [
+        {
+            "id": "impostor-week1",
+
+            "tagline": "SNOW DAY",
+            "characters": [null, "bf", null],
+
+            "hiddenSongs": {
+                "story": [],
+                "freeplay": []
+            },
+            "songs": ["sussus-moogus", "sabotage", "meltdown"],
+            "freeplayCategory": "main"
+        }
+    ],
+    "freeplayCategories": [
+        {
+            "id": "main",
+            "name": "V.S. Impostor (2025) - Main"
+        }
+    ],
+    "defaultCategory": "main"
+}

@@ -1,0 +1,41 @@
+{
+	"position": [
+		-50,
+		550
+	],
+	"scale": 0.9,
+	"flipX": false,
+	"singDuration": 6.1,
+	"atlas": {
+		"type": "sparrow",
+		"gridSize": null,
+		"path": "sprite"
+	},
+	"antialiasing": true,
+	"flipY": false,
+	"healthIcon": {
+		"scale": 1,
+		"isPixel": false,
+		"color": "#D4002D",
+		"offset": [
+			0,
+			0
+		]
+	},
+	"camera": [
+		230,
+		0
+	],
+	"animations": {
+		"idle": {
+			"fps": 24,
+			"prefix": "GfDead",
+			"offset": [
+				-1,
+				0
+			],
+			"indices": [],
+			"looped": false
+		}
+	}
+}

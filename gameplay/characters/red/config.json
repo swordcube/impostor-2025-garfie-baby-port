@@ -1,0 +1,131 @@
+{
+	"position": [
+		-140,
+		360
+	],
+	"scale": 0.9,
+	"flipX": false,
+	"singDuration": 6.1,
+	"atlas": {
+		"type": "sparrow",
+		"gridSize": null,
+		"path": "sprite"
+	},
+	"antialiasing": true,
+	"flipY": false,
+	"healthIcon": {
+		"scale": 1,
+		"isPixel": false,
+		"color": "#D4002D",
+		"offset": [
+			0,
+			0
+		]
+	},
+	"camera": [
+		230,
+		-40
+	],
+	"animations": {
+		"singDOWN": {
+			"fps": 24,
+			"prefix": "down pose",
+			"offset": [
+				-146,
+				49
+			],
+			"indices": [],
+			"looped": false
+		},
+		"nuh uh": {
+			"fps": 24,
+			"prefix": "red nuh uh",
+			"offset": [
+				0,
+				0
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singUP": {
+			"fps": 24,
+			"prefix": "up pose",
+			"offset": [
+				-117,
+				126
+			],
+			"indices": [],
+			"looped": false
+		},
+		"huh": {
+			"fps": 24,
+			"prefix": "red huh",
+			"offset": [
+				7,
+				5
+			],
+			"indices": [],
+			"looped": false
+		},
+		"idle": {
+			"fps": 24,
+			"prefix": "idle",
+			"offset": [
+				-1,
+				0
+			],
+			"indices": [],
+			"looped": false
+		},
+		"what": {
+			"fps": 24,
+			"prefix": "red what",
+			"offset": [
+				-5,
+				7
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singRIGHT": {
+			"fps": 24,
+			"prefix": "right pose",
+			"offset": [
+				-125,
+				2
+			],
+			"indices": [],
+			"looped": false
+		},
+		"sabotage": {
+			"fps": 24,
+			"prefix": "red gun",
+			"offset": [
+				-13,
+				49
+			],
+			"indices": [],
+			"looped": false
+		},
+		"well": {
+			"fps": 24,
+			"prefix": "red well",
+			"offset": [
+				-4,
+				0
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singLEFT": {
+			"fps": 24,
+			"prefix": "left pose",
+			"offset": [
+				-45,
+				-10
+			],
+			"indices": [],
+			"looped": false
+		}
+	}
+}

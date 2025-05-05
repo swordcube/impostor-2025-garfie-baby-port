@@ -1,0 +1,71 @@
+{
+	"position": [
+		-5,
+		440
+	],
+	"scale": 0.85,
+	"flipX": false,
+	"singDuration": 6.1,
+	"atlas": {
+		"type": "sparrow",
+		"gridSize": null,
+		"path": "sprite"
+	},
+	"antialiasing": true,
+	"flipY": false,
+	"healthIcon": {
+		"scale": 1,
+		"isPixel": false,
+		"color": "#A1A1A1",
+		"offset": [
+			0,
+			0
+		]
+	},
+	"camera": [
+		0,
+		0
+	],
+	"animations": {
+		"turn-right": {
+			"fps": 24,
+			"prefix": "turnright",
+			"offset": [
+				-3,
+				7
+			],
+			"indices": [],
+			"looped": false
+		},
+		"idle-left": {
+			"fps": 24,
+			"prefix": "leftidle",
+			"offset": [
+				1,
+				0
+			],
+			"indices": [],
+			"looped": false
+		},
+		"turn-left": {
+			"fps": 24,
+			"prefix": "turnleft",
+			"offset": [
+				1,
+				7
+			],
+			"indices": [],
+			"looped": false
+		},
+		"idle-right": {
+			"fps": 24,
+			"prefix": "rightidle",
+			"offset": [
+				-2,
+				0
+			],
+			"indices": [],
+			"looped": false
+		}
+	}
+}

@@ -1,0 +1,182 @@
+{
+	"position": [
+		0,
+		460
+	],
+	"scale": 3,
+	"flipX": false,
+	"singDuration": 6.1,
+	"atlas": {
+		"type": "sparrow",
+		"gridSize": null,
+		"path": "sprite"
+	},
+	"antialiasing": false,
+	"flipY": false,
+	"healthIcon": {
+		"scale": 1,
+		"isPixel": false,
+		"color": "#D4002D",
+		"offset": [
+			0,
+			0
+		]
+	},
+	"camera": [
+		0,
+		0
+	],
+	"animations": {
+		"singDOWN": {
+			"fps": 24,
+			"prefix": "red",
+			"offset": [
+				24,
+				-19
+			],
+			"indices": [
+				22,
+				23,
+				24,
+				25
+			],
+			"looped": false
+		},
+		"idle-annoyed": {
+			"fps": 12,
+			"prefix": "bf stamd",
+			"offset": [
+				-94,
+				-105
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singUP": {
+			"fps": 24,
+			"prefix": "red",
+			"offset": [
+				-12,
+				-6
+			],
+			"indices": [
+				10,
+				11,
+				12,
+				13
+			],
+			"looped": false
+		},
+		"wag sing": {
+			"fps": 12,
+			"prefix": "bf talk",
+			"offset": [
+				-61,
+				-95
+			],
+			"indices": [
+				2,
+				2,
+				0,
+				0
+			],
+			"looped": false
+		},
+		"shock": {
+			"fps": 12,
+			"prefix": "bf what",
+			"offset": [
+				-30,
+				-40
+			],
+			"indices": [
+				0,
+				1,
+				2,
+				3,
+				4,
+				5
+			],
+			"looped": false
+		},
+		"idle": {
+			"fps": 12,
+			"prefix": "red",
+			"offset": [
+				-1,
+				0
+			],
+			"indices": [
+				0
+			],
+			"looped": false
+		},
+		"singRIGHT": {
+			"fps": 24,
+			"prefix": "red",
+			"offset": [
+				70,
+				-60
+			],
+			"indices": [
+				18,
+				19,
+				20,
+				21
+			],
+			"looped": false
+		},
+		"wag": {
+			"fps": 6,
+			"prefix": "bf talk",
+			"offset": [
+				-61,
+				-95
+			],
+			"indices": [
+				0,
+				1
+			],
+			"looped": true
+		},
+		"singLEFT": {
+			"fps": 24,
+			"prefix": "red",
+			"offset": [
+				-39,
+				-3
+			],
+			"indices": [
+				14,
+				15,
+				16,
+				17
+			],
+			"looped": false
+		},
+		"wag idle": {
+			"fps": 6,
+			"prefix": "bf talk",
+			"offset": [
+				-61,
+				-95
+			],
+			"indices": [
+				0
+			],
+			"looped": false
+		},
+		"shock-loop": {
+			"fps": 12,
+			"prefix": "bf what",
+			"offset": [
+				-30,
+				-40
+			],
+			"indices": [
+				5
+			],
+			"looped": false
+		}
+	}
+}

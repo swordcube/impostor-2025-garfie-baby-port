@@ -1,0 +1,279 @@
+{
+	"position": [
+		0,
+		400
+	],
+	"scale": 1.1,
+	"flipX": true,
+	"singDuration": 6.1,
+	"atlas": {
+		"type": "sparrow",
+		"gridSize": null,
+		"path": "sprite"
+	},
+	"antialiasing": true,
+	"flipY": false,
+	"healthIcon": {
+		"scale": 1,
+		"isPixel": false,
+		"color": "#18BECD",
+		"offset": [
+			0,
+			0
+		]
+	},
+	"camera": [
+		0,
+		0
+	],
+	"animations": {
+		"singDOWN-loop": {
+			"fps": 24,
+			"prefix": "bf down",
+			"offset": [
+				19,
+				-30
+			],
+			"indices": [
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15
+			],
+			"looped": true
+		},
+		"singRIGHTmiss": {
+			"fps": 24,
+			"prefix": "bf miss right",
+			"offset": [
+				-11,
+				-2
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singDOWN": {
+			"fps": 24,
+			"prefix": "bf down",
+			"offset": [
+				19,
+				-30
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singLEFTmiss": {
+			"fps": 24,
+			"prefix": "bf miss left",
+			"offset": [
+				85,
+				-5
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singUP": {
+			"fps": 24,
+			"prefix": "bf up",
+			"offset": [
+				21,
+				38
+			],
+			"indices": [],
+			"looped": false
+		},
+		"meeting": {
+			"fps": 24,
+			"prefix": "report anim",
+			"offset": [
+				90,
+				129
+			],
+			"indices": [
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31
+			],
+			"looped": false
+		},
+		"singLEFT-loop": {
+			"fps": 24,
+			"prefix": "bf left",
+			"offset": [
+				51,
+				-3
+			],
+			"indices": [
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15
+			],
+			"looped": true
+		},
+		"singRIGHT-loop": {
+			"fps": 24,
+			"prefix": "bf right",
+			"offset": [
+				-22,
+				-9
+			],
+			"indices": [
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15
+			],
+			"looped": true
+		},
+		"idle": {
+			"fps": 24,
+			"prefix": "bf idle",
+			"offset": [
+				0,
+				0
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singDOWNmiss": {
+			"fps": 24,
+			"prefix": "bf miss down",
+			"offset": [
+				19,
+				-37
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singRIGHT": {
+			"fps": 24,
+			"prefix": "bf right",
+			"offset": [
+				-22,
+				-9
+			],
+			"indices": [],
+			"looped": false
+		},
+		"idle-loop": {
+			"fps": 24,
+			"prefix": "bf idle",
+			"offset": [
+				0,
+				0
+			],
+			"indices": [
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18
+			],
+			"looped": true
+		},
+		"singUPmiss": {
+			"fps": 24,
+			"prefix": "bf miss up",
+			"offset": [
+				23,
+				49
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singLEFT": {
+			"fps": 24,
+			"prefix": "bf left",
+			"offset": [
+				51,
+				-3
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singUP-loop": {
+			"fps": 24,
+			"prefix": "bf up",
+			"offset": [
+				21,
+				38
+			],
+			"indices": [
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15
+			],
+			"looped": true
+		}
+	}
+}

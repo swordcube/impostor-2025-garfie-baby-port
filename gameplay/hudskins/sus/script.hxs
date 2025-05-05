@@ -1,0 +1,207 @@
+var healthBar:Bar;
+var scoreTxt:FlxText;
+var tablet:FlxSprite;
+var showRating:Bool = true;
+var showCombo:Bool = true;
+var ratingText:FlxText;
+var ratingScores:FlxTypedGroup<FlxText>;
+
+final customTextMap:Map<String, String> = [
+    "killer" => "SUSSY!",
+    "sick" => "SUS!",
+    "good" => "GOOD",
+    "bad" => "ASS",
+    "shit" => "SHIT!",
+    "miss" => "MISS"
+];
+
+function generateHealthBar() {
+    healthBar = new ImageBar(0, !Options.downscroll ? 641 : 56, 'gameplay/hudskins/sus/images/healthBarGuide', function() return playField.stats.health, playField.stats.minHealth, playField.stats.maxHealth);
+    healthBar.screenCenter(FlxAxes.X);
+    healthBar.leftToRight = false;
+    healthBar.percent = (playField.stats.health / playField.stats.maxHealth) * 100;
+    add(healthBar);
+    
+    tablet = new FlxSprite(-46, !Options.downscroll ? -38 : -143).loadGraphic(getHUDImage('healthBarFG'));
+    tablet.frames = getHUDAtlas('healthBarFG');
+    tablet.setGraphicSize(Std.int(tablet.width * 0.53), Std.int(tablet.height * 0.53)); // asset is wayyy too big oops
+    tablet.updateHitbox();
+    tablet.animation.addByPrefix('idle', 'healthbar', 48, true);
+    tablet.animation.play('idle', true);
+    tablet.flipY = Options.downscroll;
+    healthBar.add(tablet); // the healthbar is a sprite group so i can do this and its easier imo
+    
+    var opponentIcon = "face";
+    if(game != null)
+        opponentIcon = game.currentChart.meta.game.getCharacter("opponent");
+    
+    var playerIcon = "face";
+    if(game != null)
+        playerIcon = game.currentChart.meta.game.getCharacter("player");
+
+    iconP1 = new HealthIcon(playerIcon, true);
+    iconP1.flipX = true;
+    add(iconP1);
+    
+    iconP2 = new HealthIcon(opponentIcon, false);
+    iconP2.y = healthBar.y - 75;
+    add(iconP2);
+
+    updateHealthBar();
+}
+
+function generatePlayerStats() {
+    scoreTxt = new FlxText(0, !Options.downscroll ? healthBar.y + 45 : healthBar.y - 45, FlxG.width, "", 24);
+    scoreTxt.setFormat(Paths.font("fonts/liber"), 24, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    scoreTxt.scrollFactor.set();
+    // scoreTxt.borderSize = 1.25;
+    add(scoreTxt);
+    
+    ratingText = new FlxText(0, Options.downscroll ? FlxG.height * 0.8 : FlxG.height * 0.1, FlxG.width, '');
+    ratingText.setFormat(Paths.font("fonts/bahn"), 48, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    ratingText.screenCenter(FlxAxes.X);
+    ratingText.borderSize = 2.5;
+    insert(members.indexOf(scoreTxt), ratingText);
+    
+    ratingScores = new FlxTypedGroup();
+    insert(members.indexOf(ratingText), ratingScores);
+    
+    for (i in 0...3) {
+        final num = ratingScores.recycle(FlxText, setupScoreNum);
+        ratingScores.add(num);
+        num.kill();
+    }
+}
+
+function updatePlayerStats(stats) {
+    var str:String = 'N/A';
+    if (stats.accuracy != 0) { // this is probably a bad way to do this im just trying to get it to work
+        // ranks based on your accuracy
+        if (stats.accuracy >= 0.95) str = 'S';
+        else if (stats.accuracy >= 0.9) str = 'A';
+        else if (stats.accuracy >= 0.8) str = 'B';
+        else if (stats.accuracy >= 0.7) str = 'C';
+        else if (stats.accuracy >= 0.6) str = 'D';
+        else str = 'F';
+    }
+    final tempScore:String = 'Score: ' + FlxStringUtil.formatMoney(stats.score, false) + '      '
+        + 'Misses: ' + stats.misses + '      '
+        + 'Rank: ' + str;
+        
+    scoreTxt.text = tempScore + "\n";
+}
+
+function onCreatePost() {
+    // force the notes ABOVE the health bar
+    game.remove(playField.hud, true);
+    game.insert(game.members.indexOf(playField), playField.hud);
+}
+
+function positionIcons() {
+    iconP1.x = healthBar.barCenter - 26;
+    iconP1.y = healthBar.y + (healthBar.barHeight * 0.5) - (iconP1.height * 0.5);
+
+    iconP2.x = healthBar.barCenter - (iconP2.width - 26);
+    iconP2.y = healthBar.y + (healthBar.barHeight * 0.5) - (iconP2.height * 0.5);
+}
+
+function updateHealthBar() {
+    healthBar.setColors(game.opponent.healthColor, game.player.healthColor);
+
+    final percent:Float = healthBar.percent / 100;
+    iconP2.health = 1 - percent;
+    iconP1.health = percent;
+    positionIcons();
+}
+
+function onUpdate(elapsed:Float) {
+    final iconSpeed:Float = Math.exp(-elapsed * 9);
+    iconP2.scale.set(
+        FlxMath.lerp((150 * iconP2.size.x) / iconP2.frameWidth, iconP2.scale.x, iconSpeed),
+        FlxMath.lerp((150 * iconP2.size.y) / iconP2.frameHeight, iconP2.scale.y, iconSpeed)
+    );
+    iconP1.scale.set(
+        FlxMath.lerp((150 * iconP1.size.x) / iconP1.frameWidth, iconP1.scale.x, iconSpeed),
+        FlxMath.lerp((150 * iconP1.size.y) / iconP1.frameHeight, iconP1.scale.y, iconSpeed)
+    );
+    iconP2.updateHitbox();
+    iconP1.updateHitbox();
+    positionIcons();
+}
+
+function bopIcons() {
+    iconP2.bop();
+    iconP1.bop();
+
+    iconP2.bopTween.cancel();
+    iconP1.bopTween.cancel();
+}
+
+function onBeatHit(beat:Int) {
+    if(beat < 0)
+        return;
+    
+    bopIcons();
+}
+
+function setupScoreNum() {
+    var num = new FlxText(0, Options.downscroll ? FlxG.height * 0.85 : FlxG.height * 0.14, 0, '0');
+    num.setFormat(Paths.font("fonts/liber"), 65, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    num.borderSize = 5;
+    return num;
+}
+
+function onDisplayRating(e) {
+    e.cancel();
+
+    FlxTween.cancelTweensOf(ratingText);
+    FlxTween.cancelTweensOf(ratingText.scale);
+	
+    ratingText.text = customTextMap.get(e.rating.toLowerCase()) ?? e.rating;
+    
+    ratingText.visible = showRating;
+    ratingText.scale.set(0.8, 0.8);
+    ratingText.alpha = 1;
+    
+    FlxTween.tween(ratingText.scale, {x: 1, y: 1}, 0.5, {ease: FlxEase.expoOut});
+    FlxTween.tween(ratingText, {alpha: 0}, 0.5, {startDelay: 0.7});
+}
+
+function onDisplayCombo(e) {
+    e.cancel();
+
+    ratingScores.forEachAlive((text) -> {
+        FlxTween.cancelTweensOf(text);
+        FlxTween.cancelTweensOf(text.scale);
+        text.kill();
+    });
+    var strCombo:String = Std.string(Math.abs(e.combo));
+    while(strCombo.length < 3)
+        strCombo = "0" + strCombo;
+
+    if(e.combo < 0)
+        strCombo = "-" + strCombo;
+
+    var totalWidth:Float = (strCombo.length * 20) - 10;
+    for(i in 0...strCombo.length) {
+        final digitStr:String = strCombo.charAt(i);
+
+        var num = ratingScores.recycle(FlxText, setupScoreNum); //might cache the graphics
+        num.text = digitStr;
+        num.screenCenter(FlxAxes.X);
+        num.x += (i * 20) - (totalWidth / 2);
+        
+        num.visible = showCombo;
+        num.scale.set(0.6, 0.6);
+        num.alpha = 1;
+        ratingScores.add(num);
+        
+        FlxTween.tween(num.scale, {x: 0.5, y: 0.5}, 0.5, {ease: FlxEase.expoOut});
+        FlxTween.tween(num, {alpha: 0}, 0.5, {
+            onComplete: (_) -> {
+                num.kill();
+            },
+            startDelay: 0.7
+        });
+    }
+}

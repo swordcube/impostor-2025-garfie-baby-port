@@ -1,0 +1,13 @@
+public var defaultCamZoom:Float = 1;
+
+function onCreatePost() {
+    defaultCamZoom = stage.data.zoom;
+}
+
+function onExecute(e) {
+    defaultCamZoom = Std.parseFloat(e.params.VALUE_1);
+}
+
+function onUpdate(dt:Float) {
+    camGame.zoom = FlxMath.lerp(camGame.zoom, defaultCamZoom, FlxMath.getElapsedLerp(camGameZoomLerp, dt));
+}

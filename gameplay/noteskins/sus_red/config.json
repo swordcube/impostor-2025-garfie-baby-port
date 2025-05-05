@@ -1,0 +1,396 @@
+{
+    "baseStrumY": 35,
+    "strum": {
+        "atlas": {
+            "type": "sparrow",
+            "path": "images/notes"
+        },
+        "scale": 0.7,
+        "animation": {
+            "static": {
+                "left": {
+                    "prefix": "arrowLEFT",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "down": {
+                    "prefix": "arrowDOWN",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "up": {
+                    "prefix": "arrowUP",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "right": {
+                    "prefix": "arrowRIGHT",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                }
+            },
+            "press": {
+                "left": {
+                    "prefix": "left press",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "down": {
+                    "prefix": "down press",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "up": {
+                    "prefix": "up press",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "right": {
+                    "prefix": "right press",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                }
+            },
+            "confirm": {
+                "left": {
+                    "prefix": "left confirm",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "down": {
+                    "prefix": "down confirm",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "up": {
+                    "prefix": "up confirm",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "right": {
+                    "prefix": "right confirm",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                }
+            }
+        },
+        "offset": [15, 0]
+    },
+    "note": {
+        "atlas": {
+            "type": "sparrow",
+            "path": "images/notes"
+        },
+        "scale": 0.7,
+        "animation": {
+            "scroll": {
+                "left": {
+                    "prefix": "purple0",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "down": {
+                    "prefix": "blue0",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "up": {
+                    "prefix": "green0",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "right": {
+                    "prefix": "red0",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                }
+            }
+        },
+        "offset": [15, 0]
+    },
+    "splash": {
+        "atlas": {
+            "type": "sparrow",
+            "path": "images/splashes"
+        },
+        "alpha": 1,
+        "scale": 1,
+        
+        "animation": {
+            "splash1": {
+                "left": {
+                    "prefix": "note splash purple",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "down": {
+                    "prefix": "note splash blue",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "up": {
+                    "prefix": "note splash green",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "right": {
+                    "prefix": "note splash red",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                }
+            }
+        },
+        "offset": [15, -6]
+    },
+    "hold": {
+        "atlas": {
+            "type": "sparrow",
+            "path": "images/notes"
+        },
+        "alpha": 0.6,
+        "scale": 0.7,
+        "animation": {
+            "hold": {
+                "left": {
+                    "prefix": "purple hold piece",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "down": {
+                    "prefix": "blue hold piece",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "up": {
+                    "prefix": "green hold piece",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "right": {
+                    "prefix": "red hold piece",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                }
+            },
+            "tail": {
+                "left": {
+                    "prefix": "purple hold end",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "down": {
+                    "prefix": "blue hold end",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "up": {
+                    "prefix": "green hold end",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "right": {
+                    "prefix": "red hold end",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                }
+            }
+        },
+        "offset": [15, 0]
+    },
+    "holdCovers": {
+        "atlas": {
+            "type": "sparrow",
+            "path": "images/hold_covers"
+        },
+        "scale": 0.8,
+        "animation": {
+            "start": {
+                "left": {
+                    "prefix": "purpleloop",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "down": {
+                    "prefix": "blueloop",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "up": {
+                    "prefix": "greenloop",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "right": {
+                    "prefix": "redloop",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                }
+            },
+            "hold": {
+                "left": {
+                    "prefix": "purpleloop",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": true,
+                    "offset": [0, 0]
+                },
+                "down": {
+                    "prefix": "blueloop",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": true,
+                    "offset": [0, 0]
+                },
+                "up": {
+                    "prefix": "greenloop",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": true,
+                    "offset": [0, 0]
+                },
+                "right": {
+                    "prefix": "redloop",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": true,
+                    "offset": [0, 0]
+                }
+            },
+            "end": {
+                "left": {
+                    "prefix": "purpleend",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "down": {
+                    "prefix": "blueend",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "up": {
+                    "prefix": "greenend",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "right": {
+                    "prefix": "redend",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                }
+            }
+        },
+        "offset": [17, 14]
+    },
+    "holdGradients": {
+        "atlas": {
+            "type": "sparrow",
+            "path": "images/hold_covers"
+        },
+        "alpha": 0,
+        "scale": 0.7825,
+        "animation": {
+            "gradient": {
+                "left": {
+                    "prefix": "gradient left",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "down": {
+                    "prefix": "gradient down",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "up": {
+                    "prefix": "gradient up",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                },
+                "right": {
+                    "prefix": "gradient right",
+                    "indices": null,
+                    "fps": 24,
+                    "looped": false,
+                    "offset": [0, 0]
+                }
+            }
+        }
+    }
+}

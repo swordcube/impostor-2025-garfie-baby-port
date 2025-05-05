@@ -1,0 +1,51 @@
+{
+	"position": [
+		0,
+		280
+	],
+	"scale": 1.1,
+	"flipX": false,
+	"singDuration": 6.1,
+	"atlas": {
+		"type": "sparrow",
+		"gridSize": null,
+		"path": "sprite"
+	},
+	"antialiasing": true,
+	"flipY": false,
+	"healthIcon": {
+		"scale": 1,
+		"isPixel": false,
+		"color": "#A1A1A1",
+		"offset": [
+			0,
+			0
+		]
+	},
+	"camera": [
+		0,
+		0
+	],
+	"animations": {
+		"idle": {
+			"fps": 24,
+			"prefix": "gf clap loop",
+			"offset": [
+				-40,
+				-1
+			],
+			"indices": [],
+			"looped": true
+		},
+		"sabotage": {
+			"fps": 24,
+			"prefix": "gf gunned",
+			"offset": [
+				-35,
+				-17
+			],
+			"indices": [],
+			"looped": false
+		}
+	}
+}

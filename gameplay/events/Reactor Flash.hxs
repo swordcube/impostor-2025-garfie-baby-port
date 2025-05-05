@@ -1,0 +1,16 @@
+// why the fuck is this hardcoded in the og mod
+public var flashSprite:FlxSprite;
+
+function onCreate() {
+    flashSprite = new FlxSprite(0, 0).makeGraphic(1280, 720, 0xFFb30000);
+    flashSprite.alpha = 0;
+    flashSprite.cameras = [camHUD];
+    insert(0, flashSprite);
+}
+
+function onExecute(e) {
+    flashSprite.alpha = 0.3;
+    var flashDuration:Float = Std.parseFloat(e.params.VALUE_1);
+    if (Math.isNaN(flashDuration)) flashDuration = 0.5;
+    FlxTween.tween(flashSprite, {alpha: 0}, flashDuration);
+}

@@ -1,0 +1,43 @@
+{
+	"freeplay": {
+		"album": "vol1",
+		"icon": "bf",
+		"ratings": {}
+	},
+	"game": {
+		"stage": "polus",
+		"scrollSpeed": {
+			"normal": 2.4,
+			"hard": 2.7
+		},
+		"characters": {
+			"spectator": "gf",
+			"opponent": "red",
+			"player": "bf"
+		},
+		"noteSkin": "sus",
+		"uiSkin": "sus",
+		"hudSkin": "sus"
+	},
+	"song": {
+		"timingPoints": [
+			{
+				"b": 155,
+				"t": 0,
+				"ts": [
+					4,
+					4
+				]
+			}
+		],
+		"artist": "EthanTheDoodler",
+		"charter": "Unknown",
+		"bpm": 155,
+		"difficulties": [
+			"normal",
+			"hard"
+		],
+		"mixes": [],
+		"title": "Sussus Moogus"
+	}
+}

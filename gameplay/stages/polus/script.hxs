@@ -1,0 +1,325 @@
+import openfl.filters.ShaderFilter;
+
+var defaultCamZoom:Float = 0.5;
+var zoomTween:FlxTween;
+
+var snowAlpha = 0;
+var ext:String = 'gameplay/stages/polus/images/'; // Edit polus to your stage name.
+var vignette:FlxSprite;
+var snow:FlxSprite;
+var rose:FlxSprite;
+var boomBox:BGSprite;
+var blackSprite:FlxSprite;
+var penis:FlxSprite;
+var singAnimations = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
+var evilCam:FlxCamera;
+var anotherCam:FlxCamera;
+var bfVoters:FlxTypedGroup;
+var redVoters:FlxTypedGroup;
+
+var everyoneLook:String = ''; // Set this to -peep WHEN THEY START YAPPING
+var p = 0;
+/*
+	0 - BF
+	1 - RED
+	2 - GREEN
+	3 - DETECTIVE
+	4 - LIME
+	5 - PURPLE
+	6 - CYAN
+	7 - ROSE
+ */
+var rv:Int = 0;
+var bv:Int = 0;
+var roseTable:FlxSprite = null;
+var greenTable:FlxSprite = null;
+
+function newBGSprite(img:String, ?x:Float, ?y:Float) {
+    var spr:FlxSprite = new FlxSprite(x ?? 0.0, y ?? 0.0);
+    if(img != null)
+        spr.loadGraphic(Paths.image(img));
+    
+    return {
+        spr: spr,
+        loadFromSheet: function(img2:String, anim:String, fps:Int) {
+            spr.frames = Paths.getSparrowAtlas(img2);
+            spr.animation.addByPrefix(anim, anim, fps);
+            spr.animation.play(anim);
+
+            if(spr.animation.curAnim == null || spr.animation.curAnim.numFrames == 1)
+                spr.active = false;
+
+            return spr;
+        },
+        loadSparrowFrames: function(img2:String) {
+            spr.frames = Paths.getSparrowAtlas(img2);
+            return spr;
+        }
+    }
+}
+
+function onLoadPost(data) {
+    var bg = newBGSprite(null, -832, -974).loadFromSheet(ext + 'sky', 'sky', 0);
+	bg.scale.set(2, 2);
+	bg.updateHitbox();
+	bg.scrollFactor.set(0.3, 0.3);
+    layers[0].add(bg);
+	
+	stars = newBGSprite(null, -1205, -1600).loadFromSheet(ext + 'sky', 'stars', 0);
+	stars.scale.set(2, 2);
+	stars.updateHitbox();
+	stars.scrollFactor.set(1.1, 1.1);
+    layers[0].add(stars);
+	
+	mountains = newBGSprite(null, -1569, -185).loadFromSheet(ext + 'bg2', 'bgBack', 0);
+	mountains.scrollFactor.set(0.8, 0.8);
+	layers[0].add(mountains);
+	
+	mountains2 = newBGSprite(null, -1467, -25).loadFromSheet(ext + 'bg2', 'bgFront', 0);
+	mountains2.scrollFactor.set(0.9, 0.9);
+	layers[0].add(mountains2);
+	
+	floor = newBGSprite(null, -1410, -139).loadFromSheet(ext + 'bg2', 'groundnew', 0);
+	layers[0].add(floor);
+
+    var thingy = newBGSprite(null, 2458, -115).loadSparrowFrames(ext + "guylmao");
+	thingy.animation.addByPrefix('idle', 'REACTOR_THING', 24, true);
+	thingy.animation.play('idle');
+    layers[0].add(thingy);
+	
+	var thingy2 = newBGSprite(ext + "thing front", 2467, 269).spr;
+    layers[0].add(thingy2);
+
+    var overlayShader = new CustomShader("overlay");
+    overlayShader.hset("bitmapOverlay", FlxG.bitmap.add(Paths.image(ext + 'overlay')).bitmap);
+    game.camGame.filters = [new ShaderFilter(overlayShader)];
+
+    var camVignette = new FlxCamera();
+    camVignette.bgColor = 0;
+    FlxG.cameras.insert(camVignette, FlxG.cameras.list.indexOf(game.camHUD), false);
+
+    vignette = newBGSprite(ext + "polusvignette").spr;
+	vignette.cameras = [camVignette];
+	vignette.alpha = 0.8;
+	layers[0].add(vignette);
+	
+	// i put it back for now
+	blackSprite = new FlxSprite(0, 0).makeSolid(1280, 720, 0xff000000);
+	blackSprite.cameras = [game.camOther];
+	blackSprite.alpha = 0;
+	layers[0].add(blackSprite);
+
+    penis = new FlxSprite(0, 0).makeSolid(1280, 720, 0xff000000);
+	penis.cameras = [game.camOther];
+	penis.alpha = 0;
+	layers[0].add(penis);
+    props.set("penis", penis);
+}
+
+function onCreatePost() {
+    // really don't feel like fixing the positions
+    // to match the new system (offset from bottom center instead of top left)
+    for(char in [game.spectator, game.opponent, game.player]) {
+        char.footOffset.y = 0;
+        char.dance();
+    }
+
+    if (game.currentSong == 'sussus-moogus') {
+        game.isCameraOnForcedPos = true;
+        game.snapCamFollowToPos(1025, -800);
+        game.camHUD.alpha = 0;
+        game.camGame.zoom = 0.4;
+
+        props.get("penis").alpha = 1;
+        game.countdown.cameras = [game.camOther];
+        game.camZoomingInterval = 0;
+        
+        evilGreen = newBGSprite(null, -550, 725).loadSparrowFrames(ext + "green");
+        evilGreen.animation.addByPrefix('cutscene', 'scene instance 1', 24, false);
+        evilGreen.scale.set(2.3, 2.3);
+        // evilGreen.scrollFactor.set(1.2, 1.2);
+        evilGreen.alpha = 0;
+        add(evilGreen);
+        
+        evilCam = new FlxCamera();
+        evilCam.bgColor = 0;
+        FlxG.cameras.insert(evilCam, FlxG.cameras.list.indexOf(game.camOther), false);
+        
+        evilGreen.cameras = [evilCam];
+        game.graphicCache.cache(Paths.image(ext + "green")); // force this shit into vram Now so lag spikes don't happen Later
+    }
+    anotherCam = new FlxCamera();
+    anotherCam.bgColor = 0;
+    FlxG.cameras.insert(anotherCam, FlxG.cameras.list.indexOf(game.camOther), false);
+
+    vignette2 = newBGSprite(ext + "vignette2", 0, 0).spr;
+	vignette2.cameras = [anotherCam];
+	vignette2.alpha = 0;
+	add(vignette2);
+}
+
+function onUpdate(dt:Float) {
+    anotherCam.zoom = game.camHUD.zoom + game.camHUD.extraZoom;
+    evilCam.zoom = game.camGame.zoom + game.camGame.extraZoom;
+    evilCam.scroll.x = game.camGame.scroll.x;
+    evilCam.scroll.y = game.camGame.scroll.y;
+}
+
+function onEvent(e) {
+    switch(e.eventType) {
+        case 'orange':
+            var orange = props.get('orange');
+            var green = props.get('green');
+
+            switch(e.params.VALUE_1) {
+                case 'walk':
+                    orange.alpha = 1;
+                    FlxTween.tween(orange, {x: 60}, 3.5,
+                        {
+                            onComplete: function() {
+                                orange.animation.play('idle');
+                                orange.y += 30;
+                            }
+                        });
+                
+                case 'die':
+                    orange.animation.play('die');
+                
+                case 'wave':
+                    orange.animation.play('wave');
+                    orange.y -= 100;
+                
+                case 'camMiddle':
+                    game.isCameraOnForcedPos = true;
+                    FlxTween.tween(game.camFollow, {x: 1025, y: 500}, 1, {ease: FlxEase.linear});
+                    FlxTween.tween(FlxG.camera, {zoom: 0.5}, 1, {ease: FlxEase.smootherStepInOut});
+                    defaultCamZoom = 0.5;
+                
+                case 'camMiddleSlow':
+                    game.isCameraOnForcedPos = true;
+                    FlxTween.tween(game.camFollow, {x: 1025, y: 500}, 1.5, {ease: FlxEase.linear});
+                    FlxTween.tween(FlxG.camera, {zoom: 0.5}, 2, {ease: FlxEase.linear});
+                    defaultCamZoom = 0.5;
+                
+                case 'camMiddleTuah':
+                    game.isCameraOnForcedPos = true;
+                    FlxTween.tween(game.camFollow, {x: 1025, y: 500}, 1, {ease: FlxEase.linear});
+                    FlxTween.tween(FlxG.camera, {zoom: 0.55}, 1, {ease: FlxEase.smootherStepInOut});
+                    defaultCamZoom = 0.55;
+                
+                case 'camNormal':
+                    game.isCameraOnForcedPos = false;
+                
+                case 'camRight':
+                    game.isCameraOnForcedPos = true;
+                    FlxTween.tween(game.camFollow, {x: 1600, y: 525}, 5, {ease: FlxEase.smootherStepInOut});
+                    defaultCamZoom = 0.5;
+                    FlxTween.tween(FlxG.camera, {zoom: 0.5}, 1, {ease: FlxEase.smootherStepInOut});
+
+                case 'evilgreen':
+                    game.playField.cameras = [anotherCam];
+                    flashSprite.scale.set(5, 5);
+                    flashSprite.cameras = [anotherCam];
+                    evilGreen.alpha = 1;
+
+                    FlxTween.tween(vignette2, {alpha: 0.6}, 3, {ease: FlxEase.linear});
+                    evilGreen.animation.play('cutscene');
+
+                    FlxTween.tween(vignette2, {alpha: 0}, 2, {ease: FlxEase.linear, startDelay: 9});
+                    FlxTween.tween(vignette2, {alpha: 0}, 2,
+                        {
+                            ease: FlxEase.linear,
+                            startDelay: 9,
+                            onComplete: function(tween:FlxTween) {
+                                new FlxTimer().start(2, function(tmr:FlxTimer) {
+                                    game.playField.cameras = [game.camHUD];
+                                    flashSprite.scale.set(1, 1);
+                                    flashSprite.cameras = [game.camHUD];
+                                    remove(evilGreen);
+                                });
+                            }
+                        });
+                
+                case 'idle':
+                    orange.animation.play('idle');
+                    orange.y += 100;
+
+                case 'intro':
+                    // TODO: snow
+                    // it's so weird in the actual src code idc to do it rn
+
+                    FlxTween.tween(game.camHUD, {alpha: 1}, 2.5, {ease: FlxEase.linear, startDelay: 9.5});
+					FlxTween.tween(FlxG.camera, {zoom: 0.5}, 12, {ease: FlxEase.smootherStepInOut});
+
+					FlxTween.tween(game.camFollow, {y: 500}, 12, {
+                        ease: FlxEase.smootherStepInOut,
+                        startDelay: 0,
+                        onComplete: function(tween:FlxTween) {
+                            new FlxTimer().start(0.2, function(tmr:FlxTimer) {
+                                game.isCameraOnForcedPos = false;
+                                game.camZoomingInterval = -1;
+                            });
+                        }
+                    });
+
+                case 'star':
+					game.isCameraOnForcedPos = true;
+					
+					// FlxTween.num(snowAlpha, 0, 2, {startDelay: 1.5}, (f) -> {
+					// 	snowAlpha = f;
+					// });
+					
+					FlxTween.tween(props.get('redStar'), {alpha: 0.9}, 5, {ease: FlxEase.linear});
+					FlxTween.tween(props.get('bfStar'), {alpha: 0.9}, 3, {ease: FlxEase.linear, startDelay: 5});
+					
+					FlxTween.tween(FlxG.camera, {zoom: 0.4}, 5, {ease: FlxEase.smootherStepInOut});
+					FlxTween.tween(game.camFollow, {x: 1025, y: -800}, 5, {
+							ease: FlxEase.smootherStepInOut,
+							startDelay: 0,
+							onComplete: function(tween:FlxTween) {
+								new FlxTimer().start(0, function(tmr:FlxTimer) {
+									defaultCamZoom = 0.4;
+								});
+							}
+						});
+				case 'down':
+					FlxTween.tween(props.get('redStar'), {alpha: 0}, 1, {ease: FlxEase.linear});
+                    FlxTween.tween(props.get('bfStar'), {alpha: 0}, 1, {ease: FlxEase.linear});
+					// FlxTween.tween(snow, {alpha: 0.7}, 0.5, {ease: FlxEase.linear, startDelay: 1});
+					// FlxTween.num(snowAlpha, 1, 0.5, {startDelay: 1}, (f) -> {
+					// 	snowAlpha = f;
+					// });
+					FlxTween.tween(FlxG.camera, {zoom: 0.5}, 1, {ease: FlxEase.smootherStepInOut});
+					FlxTween.tween(game.camFollow, {x: 800, y: 500}, 1, {
+                        ease: FlxEase.smootherStepInOut,
+                        startDelay: 0,
+                        onComplete: function(tween:FlxTween) {
+                            new FlxTimer().start(0, function(tmr:FlxTimer) {
+                                defaultCamZoom = 0.5;
+                                game.isCameraOnForcedPos = false;
+                            });
+                        }
+                    });
+            }
+            switch(e.params.VALUE_2) {
+				case 'walk':
+					green.alpha = 1;
+					FlxTween.tween(green, {x: -200}, 3.5,
+						{
+							onComplete: function() {
+								green.animation.play('idle');
+							}
+						});
+				case 'kill':
+					green.animation.play('kill');
+				case 'carry':
+					orange.alpha = 0;
+					green.animation.play('carry');
+					FlxTween.tween(green, {x: -1000}, 5);
+            }
+    }
+}
+
+function onSongStart() {
+    props.get("penis").alpha = 0;
+}

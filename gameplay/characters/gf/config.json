@@ -1,0 +1,202 @@
+{
+	"position": [
+		0,
+		280
+	],
+	"scale": 1.1,
+	"flipX": false,
+	"singDuration": 6.1,
+	"atlas": {
+		"type": "sparrow",
+		"gridSize": null,
+		"path": "sprite"
+	},
+	"antialiasing": true,
+	"flipY": false,
+	"healthIcon": {
+		"scale": 1,
+		"isPixel": false,
+		"color": "#A1A1A1",
+		"offset": [
+			0,
+			0
+		]
+	},
+	"camera": [
+		0,
+		0
+	],
+	"animations": {
+		"clap": {
+			"fps": 24,
+			"prefix": "gf clap loop",
+			"offset": [
+				-40,
+				-1
+			],
+			"indices": [],
+			"looped": true
+		},
+		"turn": {
+			"fps": 24,
+			"prefix": "gf idle turn right",
+			"offset": [
+				0,
+				0
+			],
+			"indices": [
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13
+			],
+			"looped": false
+		},
+		"danceRight": {
+			"fps": 24,
+			"prefix": "gf idle look right",
+			"offset": [
+				0,
+				0
+			],
+			"indices": [
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27
+			],
+			"looped": false
+		},
+		"sabotage": {
+			"fps": 24,
+			"prefix": "gf gunned",
+			"offset": [
+				-35,
+				-17
+			],
+			"indices": [],
+			"looped": false
+		},
+		"danceLeft": {
+			"fps": 24,
+			"prefix": "gf idle look right",
+			"offset": [
+				0,
+				-1
+			],
+			"indices": [
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13
+			],
+			"looped": false
+		},
+		"danceLeft-left": {
+			"fps": 24,
+			"prefix": "gf idle look left",
+			"offset": [
+				0,
+				-1
+			],
+			"indices": [
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13
+			],
+			"looped": false
+		},
+		"turn-left": {
+			"fps": 24,
+			"prefix": "gf idle turn left",
+			"offset": [
+				0,
+				0
+			],
+			"indices": [
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13
+			],
+			"looped": false
+		},
+		"danceRight-left": {
+			"fps": 24,
+			"prefix": "gf idle look left",
+			"offset": [
+				0,
+				0
+			],
+			"indices": [
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27
+			],
+			"looped": false
+		}
+	},
+	"danceSteps": ["danceLeft", "danceRight"]
+}

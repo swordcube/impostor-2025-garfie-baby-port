@@ -1,0 +1,140 @@
+{
+	"position": [
+		-140,
+		360
+	],
+	"scale": 0.9,
+	"flipX": false,
+	"singDuration": 6.1,
+	"atlas": {
+		"type": "sparrow",
+		"gridSize": null,
+		"path": "sprite"
+	},
+	"antialiasing": true,
+	"flipY": false,
+	"healthIcon": {
+		"scale": 1,
+		"isPixel": false,
+		"color": "#D4002D",
+		"offset": [
+			0,
+			0
+		]
+	},
+	"camera": [
+		180,
+		50
+	],
+	"animations": {
+		"idle": {
+			"fps": 24,
+			"prefix": "idle",
+			"offset": [
+				20,
+				0
+			],
+			"indices": [],
+			"looped": false
+		},
+		"idle-loop": {
+			"fps": 24,
+			"prefix": "idle",
+			"offset": [
+				20,
+				0
+			],
+			"indices": [
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				32,
+				33,
+				34,
+				35,
+				36,
+				37,
+				38,
+				39,
+				40,
+				41,
+				42,
+				43,
+				44,
+				45,
+				46,
+				47,
+				48,
+				49,
+				50,
+				51,
+				52,
+				53,
+				54,
+				55,
+				56,
+				57
+			],
+			"looped": true
+		},
+		"singRIGHT": {
+			"fps": 24,
+			"prefix": "right pose",
+			"offset": [
+				-155,
+				-8
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singDOWN": {
+			"fps": 24,
+			"prefix": "down pose",
+			"offset": [
+				4,
+				-60
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singLEFT": {
+			"fps": 24,
+			"prefix": "left pose",
+			"offset": [
+				-75,
+				-20
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singUP": {
+			"fps": 24,
+			"prefix": "up pose",
+			"offset": [
+				-207,
+				56
+			],
+			"indices": [],
+			"looped": false
+		},
+		"meeting": {
+			"fps": 24,
+			"prefix": "red throwaway",
+			"offset": [
+				475,
+				57
+			],
+			"indices": [],
+			"looped": false
+		}
+	}
+}

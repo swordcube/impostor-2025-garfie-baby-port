@@ -1,0 +1,14 @@
+// psych event compat!! yay!
+
+function onExecute(e) {
+    var gameAmount:Float = Std.parseFloat(e.params.VALUE_1);
+    if(Math.isNaN(gameAmount))
+        gameAmount = 0.015;
+
+    var hudAmount:Float = Std.parseFloat(e.params.VALUE_2);
+    if(Math.isNaN(hudAmount))
+        hudAmount = 0.01;
+    
+    camGame.extraZoom += gameAmount;
+    camHUD.extraZoom += hudAmount;
+}

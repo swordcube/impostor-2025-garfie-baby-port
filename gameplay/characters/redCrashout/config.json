@@ -1,0 +1,101 @@
+{
+	"position": [
+		50,
+		350
+	],
+	"scale": 0.9,
+	"flipX": false,
+	"singDuration": 6.1,
+	"atlas": {
+		"type": "sparrow",
+		"gridSize": null,
+		"path": "sprite"
+	},
+	"antialiasing": true,
+	"flipY": false,
+	"healthIcon": {
+		"scale": 1,
+		"isPixel": false,
+		"color": "#D4002D",
+		"offset": [
+			0,
+			0
+		]
+	},
+	"camera": [
+		0,
+		55
+	],
+	"animations": {
+		"idle": {
+			"fps": 24,
+			"prefix": "idle",
+			"offset": [
+				30,
+				-10
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singRIGHT": {
+			"fps": 24,
+			"prefix": "right",
+			"offset": [
+				31,
+				-25
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singDOWN": {
+			"fps": 24,
+			"prefix": "down",
+			"offset": [
+				58,
+				-65
+			],
+			"indices": [],
+			"looped": false
+		},
+		"throw": {
+			"fps": 24,
+			"prefix": "turn angry",
+			"offset": [
+				61,
+				67
+			],
+			"indices": [],
+			"looped": false
+		},
+		"voted": {
+			"fps": 24,
+			"prefix": "vote notice",
+			"offset": [
+				18,
+				-16
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singLEFT": {
+			"fps": 24,
+			"prefix": "left",
+			"offset": [
+				125,
+				-15
+			],
+			"indices": [],
+			"looped": false
+		},
+		"singUP": {
+			"fps": 24,
+			"prefix": "up",
+			"offset": [
+				42,
+				9
+			],
+			"indices": [],
+			"looped": false
+		}
+	}
+}

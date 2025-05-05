@@ -1,0 +1,33 @@
+var storedCameraTarget = -1;
+var idleSuffix:String = "";
+
+function onCreatePost() {
+    storedCameraTarget = -1;
+    lookAtTarget(game.curCameraTarget);
+}
+
+function onEvent(e) {
+    if(e.eventType != "Camera Pan")
+        return;
+
+    lookAtTarget(e.params.char);
+}
+
+function lookAtTarget(char) {
+    if(storedCameraTarget == char)
+        return;
+
+    switch(char) {
+        case 1:
+            // trace("ooh bf is so sexy!");
+            idleSuffix = "";
+            
+        default:
+            // trace("blah this guy fuckin sucks");
+            idleSuffix = "-left";
+    }
+    animation.play("turn" + idleSuffix);
+    data.danceSteps = ["danceLeft" + idleSuffix, "danceRight" + idleSuffix];
+    
+    storedCameraTarget = char;
+}

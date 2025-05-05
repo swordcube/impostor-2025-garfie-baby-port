@@ -1,0 +1,35 @@
+{
+    "zoom": 0.5,
+    "folders": {
+        "images": "images",
+        "sfx": "sfx"
+    },
+    "layers": [
+        [],
+        [
+            {
+                "type": "spectator",
+                "properties": {
+                    "scroll": [0.95, 0.95],
+                    "position": [900, 50],
+                    "camera": [0, 0]
+                }
+            },
+            {
+                "type": "opponent",
+                "properties": {
+                    "position": [300, 200],
+                    "camera": [0, 0]
+                }
+            },
+            {
+                "type": "player",
+                "properties": {
+                    "position": [1400, 75],
+                    "camera": [0, 0]
+                }
+            }
+        ],
+        []
+    ]
+}

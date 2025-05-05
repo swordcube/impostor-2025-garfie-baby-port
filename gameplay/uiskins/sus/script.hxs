@@ -1,0 +1,24 @@
+function onCountdownStepPost(e) {
+    final sprite:FlxSprite = e.sprite;
+    if(e.tween != null)
+        e.tween.cancel();
+
+    final time:Float = Conductor.instance.beatLength / 1000;
+    FlxTween.tween(sprite.scale, {x: 0.5, y: 0.5}, time * 0.5);
+
+    final counter:Int = e.counter;
+    FlxTimer.wait(time, () -> {
+        if(counter < 3) {
+            game.countdown.remove(sprite, true);
+            sprite.destroy();
+        } else {
+            FlxTween.tween(sprite, {y: FlxG.height}, time, {
+                ease: FlxEase.cubeInOut,
+                onComplete: (_) -> {
+                    game.countdown.remove(sprite, true);
+                    sprite.destroy();
+                }
+            });
+        }
+    });
+}

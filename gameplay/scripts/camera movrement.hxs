@@ -1,0 +1,22 @@
+final amount:Float = 20;
+
+function onCameraMove(e) {
+    final character:Character = switch(curCameraTarget) {
+        case 0: opponent;
+        case 1: player;
+        case 2: spectator;
+    }
+    // left/right movement
+    if(StringTools.startsWith(character.animation.name, "singLEFT"))
+        e.position.x -= amount * camGame.zoom;
+    
+    else if(StringTools.startsWith(character.animation.name, "singRIGHT"))
+        e.position.x += amount * camGame.zoom;
+    
+    // up/down movement
+    if(StringTools.startsWith(character.animation.name, "singUP"))
+        e.position.y -= amount * camGame.zoom;
+
+    else if(StringTools.startsWith(character.animation.name, "singDOWN"))
+        e.position.y += amount * camGame.zoom;
+}
