@@ -1,5 +1,7 @@
 {
+    "id": "impostor-2025",
     "apiVersion": "0.1.0",
+    
     "allowUnsafeScripts": true,
     "levels": [
         {

@@ -1,3 +1,8 @@
+function onPreloadNoteSkin(assets) {
+    for(asset in getNoteSkinPreloads("sus_red"))
+        assets.push(asset);
+}
+
 function onCreatePost() {
     playField.opponentStrumLine.skin = "sus_red";
 }

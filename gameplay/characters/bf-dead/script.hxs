@@ -1,0 +1,4 @@
+function onLoadPost() {
+    footOffset.y = 0;
+    dance();
+}

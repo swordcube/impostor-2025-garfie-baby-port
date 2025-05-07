@@ -7,7 +7,7 @@ function onExecute(e) {
 
     var hudAmount:Float = Std.parseFloat(e.params.VALUE_2);
     if(Math.isNaN(hudAmount))
-        hudAmount = 0.01;
+        hudAmount = 0.03;
     
     camGame.extraZoom += gameAmount;
     camHUD.extraZoom += hudAmount;

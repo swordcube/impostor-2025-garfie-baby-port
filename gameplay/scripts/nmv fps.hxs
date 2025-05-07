@@ -18,7 +18,10 @@ var underlay:Bitmap;
 var text:TextField;
 
 var currentFPS:Int = 0;
-var times:Array<Float> = [];
+var framesPassed:Int = 0;
+
+var timer:Float = 0;
+var lastTimeStamp:Float = 0;
 
 var deltaTimeout:Float = 100;
 
@@ -27,7 +30,6 @@ function onCreate() {
         closeScript();
         return;
     }
-    trace("INIT FPS COUNTER");
     Main.statsDisplay.visible = false;
 
     shit = new Sprite();
@@ -54,15 +56,21 @@ function onCreate() {
 
 function onEnterFrame(e) {
     final now:Float = Timer.stamp() * 1000;
-    times.push(now);
     
-    while(times[0] < now - 1000)
-        times.shift();
+    framesPassed++;
+    timer += (now - lastTimeStamp);
     
-    currentFPS = times.length;
-    if(currentFPS > FlxG.drawFramerate)
-        currentFPS = FlxG.drawFramerate;
+    lastTimeStamp = now;
     
+    if(timer >= 1000.0) {
+        currentFPS = framesPassed;
+        if(FlxG.drawFramerate > 0 && currentFPS > FlxG.drawFramerate)
+            currentFPS = FlxG.drawFramerate;
+
+        framesPassed = 0;
+        timer = 0.0;
+    }
+
     if(deltaTimeout < 100) {
         final nowNow:Float = Timer.stamp() * 1000;
         deltaTimeout += (nowNow - now) * 1000;

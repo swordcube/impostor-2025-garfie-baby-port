@@ -31,7 +31,7 @@ function newBGSprite(img:String, ?x:Float, ?y:Float) {
     }
 }
 
-function onCreate() {
+function onCreatePost() {
     bfStar = new Character('bfStar', true);
     bfStar.setPosition(1500, -1150);
 	bfStar.scrollFactor.set(1.2, 1.2);

@@ -114,13 +114,6 @@ function onLoadPost(data) {
 }
 
 function onCreatePost() {
-    // really don't feel like fixing the positions
-    // to match the new system (offset from bottom center instead of top left)
-    for(char in [game.spectator, game.opponent, game.player]) {
-        char.footOffset.y = 0;
-        char.dance();
-    }
-
     if (game.currentSong == 'sussus-moogus') {
         game.isCameraOnForcedPos = true;
         game.snapCamFollowToPos(1025, -800);

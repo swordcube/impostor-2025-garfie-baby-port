@@ -1,0 +1,94 @@
+// don't continue if the content pack doesn't
+// match the pack this script came from
+if(!isCurrentPack()) {
+    closeScript();
+    return;
+}
+var defeat:BGSprite;
+var gameOver:BGSprite;
+
+var uiCam:FlxCamera;
+var ct:FlxSprite;
+
+function newBGSprite(img:String, ?x:Float, ?y:Float) {
+    var spr:FlxSprite = new FlxSprite(x ?? 0.0, y ?? 0.0);
+    if(img != null)
+        spr.loadGraphic(Paths.image(img));
+    
+    return {
+        spr: spr,
+        loadFromSheet: function(img2:String, anim:String, fps:Int) {
+            spr.frames = Paths.getSparrowAtlas(img2);
+            spr.animation.addByPrefix(anim, anim, fps);
+            spr.animation.play(anim);
+
+            if(spr.animation.curAnim == null || spr.animation.curAnim.numFrames == 1)
+                spr.active = false;
+
+            return spr;
+        },
+        loadSparrowFrames: function(img2:String) {
+            spr.frames = Paths.getSparrowAtlas(img2);
+            return spr;
+        }
+    }
+}
+
+function onCreatePost() {
+    defeat = newBGSprite("gameplay/death/defeat effect", character.x + 180, character.y + 520).spr;
+    defeat.x -= defeat.width * .5;
+    defeat.scale.set(.044, 1);
+    defeat.alpha = 0;
+
+    gameOver = newBGSprite("gameplay/death/game over", character.x + 180).spr;
+    gameOver.x -= gameOver.width * .5;
+    gameOver.alpha = 0;
+
+    uiCam = new FlxCamera();
+    uiCam.bgColor = 0;
+    uiCam.alpha = 0;
+    FlxG.cameras.add(uiCam, false);
+
+    ct = new FlxSprite(42.15, FlxG.height - 10).loadGraphic(Paths.image('menus/common/controls_death'));
+    ct.y -= ct.height;
+    ct.cameras = [uiCam];
+    add(ct);
+    
+    insert(members.indexOf(character), defeat);
+    add(gameOver);
+
+    FlxTween.tween(defeat, { alpha: 1 }, 1.5, { ease: FlxEase.sineInOut });
+    FlxTween.tween(defeat.scale, { x: 4.74 }, 3, { ease: FlxEase.quadOut });
+    
+    FlxTimer.wait(0.001, () -> {
+        gameOver.y = defeat.y - 200;
+        FlxTween.tween(gameOver, { y: defeat.y - 50, alpha: 1 }, 2, { ease: FlxEase.quadOut, startDelay: 1 });
+    });
+    camera.followLerp = 0.01;
+    camera.followEnabled = false;
+
+    var shader = new CustomShader("color_swap");
+    shader.hset("SATURATION", 0);
+    shader.hset("BRIGHTNESS", 0);
+    character.shader = shader;
+
+    var evil = {s: 0, b: 0};
+    FlxTween.tween(evil, { s: -1, b: -.5 }, 3, { ease: FlxEase.linear, onUpdate: (_) -> {
+        shader.hset("SATURATION", evil.s);
+        shader.hset("BRIGHTNESS", evil.b);
+    }});
+}
+
+function onUpdate(dt:Float) {
+    if (character.animation.curAnim.curFrame >= 12 && !camera.followEnabled)
+        camera.followEnabled = true;
+}
+
+function onDeathLoopStart() {
+    FlxTween.tween(uiCam, {alpha: 1}, 0.35);
+    FlxTween.tween(FlxG.camera, { zoom: 0.75 }, 4, { ease: FlxEase.smootherStepInOut });
+}
+
+function onRetry() {
+    FlxTween.tween(uiCam, {alpha: 0}, 0.35);
+}

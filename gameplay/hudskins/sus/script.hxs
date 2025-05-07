@@ -16,14 +16,21 @@ final customTextMap:Map<String, String> = [
     "miss" => "MISS"
 ];
 
+function onCreate() {
+    Cache.preloadAssets([
+        {path: getHUDImage('healthBarGuide'), type: "image"},
+        {path: getHUDImage('healthBarFG'), type: "image"}
+    ]);
+}
+
 function generateHealthBar() {
-    healthBar = new ImageBar(0, !Options.downscroll ? 641 : 56, 'gameplay/hudskins/sus/images/healthBarGuide', function() return playField.stats.health, playField.stats.minHealth, playField.stats.maxHealth);
+    healthBar = new ImageBar(0, !Options.downscroll ? 641 : 56, getHUDImage('healthBarGuide'), function() return playField.stats.health, playField.stats.minHealth, playField.stats.maxHealth);
     healthBar.screenCenter(FlxAxes.X);
     healthBar.leftToRight = false;
     healthBar.percent = (playField.stats.health / playField.stats.maxHealth) * 100;
     add(healthBar);
     
-    tablet = new FlxSprite(-46, !Options.downscroll ? -38 : -143).loadGraphic(getHUDImage('healthBarFG'));
+    tablet = new FlxSprite(-46, !Options.downscroll ? -38 : -143);
     tablet.frames = getHUDAtlas('healthBarFG');
     tablet.setGraphicSize(Std.int(tablet.width * 0.53), Std.int(tablet.height * 0.53)); // asset is wayyy too big oops
     tablet.updateHitbox();
@@ -55,7 +62,6 @@ function generatePlayerStats() {
     scoreTxt = new FlxText(0, !Options.downscroll ? healthBar.y + 45 : healthBar.y - 45, FlxG.width, "", 24);
     scoreTxt.setFormat(Paths.font("fonts/liber"), 24, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
     scoreTxt.scrollFactor.set();
-    // scoreTxt.borderSize = 1.25;
     add(scoreTxt);
     
     ratingText = new FlxText(0, Options.downscroll ? FlxG.height * 0.8 : FlxG.height * 0.1, 200, '');

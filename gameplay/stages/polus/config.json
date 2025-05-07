@@ -4,6 +4,20 @@
         "images": "images",
         "sfx": "sfx"
     },
+    "preload": [
+        {"path": "bg2", "type": "image"},
+        {"path": "green", "type": "image"},
+        {"path": "guylmao", "type": "image"},
+        {"path": "inside", "type": "image"},
+        {"path": "orange", "type": "image"},
+        {"path": "overlay", "type": "image"},
+        {"path": "polusvignette", "type": "image"},
+        {"path": "saboSpotlight", "type": "image"},
+        {"path": "sky", "type": "image"},
+        {"path": "stars", "type": "image"},
+        {"path": "thing front", "type": "image"},
+        {"path": "vignette2", "type": "image"}
+    ],
     "layers": [
         [],
         [

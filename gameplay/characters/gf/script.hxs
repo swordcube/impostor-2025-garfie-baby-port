@@ -1,6 +1,11 @@
 var storedCameraTarget = -1;
 var idleSuffix:String = "";
 
+function onLoadPost() {
+    footOffset.y = 0;
+    dance();
+}
+
 function onCreatePost() {
     storedCameraTarget = -1;
     lookAtTarget(game.curCameraTarget);

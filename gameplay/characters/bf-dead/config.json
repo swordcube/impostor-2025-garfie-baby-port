@@ -1,62 +1,87 @@
 {
-	"position": [
-		-90,
-		430
-	],
-	"scale": 1.1,
-	"flipX": true,
-	"isPlayer": true,
-	"singDuration": 4,
-	"atlas": {
-		"type": "sparrow",
-		"gridSize": null,
-		"path": "sprite"
-	},
-	"antialiasing": true,
-	"flipY": false,
 	"healthIcon": {
-		"scale": 1,
 		"isPixel": false,
-		"color": "#31B0D1",
+		"scale": 1,
+		"flipX": false,
+		"flipY": false,
 		"offset": [
 			0,
 			0
-		]
+		],
+		"color": "#31B0D1"
 	},
-	"camera": [
+	"atlas": {
+		"type": "sparrow",
+		"path": "sprite",
+		"gridSize": null
+	},
+	"gridSize": [
 		0,
 		0
 	],
 	"animations": {
-		"retry": {
-			"fps": 24,
-			"prefix": "game over select",
-			"offset": [
-				97,
-				-192
-			],
-			"indices": [],
-			"looped": false
-		},
-		"loop": {
-			"fps": 24,
-			"prefix": "loop game over bf",
-			"offset": [
-				37,
-				-192
-			],
-			"indices": [],
-			"looped": true
-		},
 		"death": {
-			"fps": 24,
 			"prefix": "game over bf",
+			"texture": null,
+			"indices": [			],
+			"fps": 24,
+			"looped": false,
 			"offset": [
 				37,
 				11
-			],
-			"indices": [],
-			"looped": false
+			]
+		},
+		"loop": {
+			"prefix": "loop game over bf",
+			"texture": null,
+			"indices": [			],
+			"fps": 24,
+			"looped": true,
+			"offset": [
+				37,
+				-174
+			]
+		},
+		"retry": {
+			"prefix": "game over select",
+			"texture": null,
+			"indices": [			],
+			"fps": 24,
+			"looped": false,
+			"offset": [
+				92,
+				-174
+			]
 		}
-	}
+	},
+	"position": [
+		-90,
+		430
+	],
+	"camera": [
+		155,
+		210
+	],
+	"scale": 1.1,
+	"flipX": true,
+	"flipY": false,
+	"isPlayer": true,
+	"antialiasing": true,
+	"singDuration": 4,
+	"deathCharacter": "bf-dead",
+	"danceSteps": [
+		"loop"
+	],
+	"singSteps": [
+		"singLEFT",
+		"singDOWN",
+		"singUP",
+		"singRIGHT"
+	],
+	"missSteps": [
+		"singLEFTmiss",
+		"singDOWNmiss",
+		"singUPmiss",
+		"singRIGHTmiss"
+	]
 }
