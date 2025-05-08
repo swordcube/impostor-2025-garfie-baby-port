@@ -7,14 +7,7 @@ var ratingText:FlxText;
 var ratingScores:FlxTypedGroup<FlxText>;
 var botplayTxt:FlxText;
 
-final customTextMap:Map<String, String> = [
-    "killer" => "SUSSY!",
-    "sick" => "SUS!",
-    "good" => "GOOD",
-    "bad" => "ASS",
-    "shit" => "SHIT!",
-    "miss" => "MISS"
-];
+var customTextMap:Map<String, String>;
 
 function onCreate() {
     Cache.preloadAssets([
@@ -59,6 +52,24 @@ function generateHealthBar() {
 }
 
 function generatePlayerStats() {
+    if(Scoring.useKillers) {
+        customTextMap = [
+            "killer" => "SUSSY!",
+            "sick" => "SUS!",
+            "good" => "GOOD",
+            "bad" => "ASS",
+            "shit" => "SHIT!",
+            "miss" => "MISS"
+        ];
+    } else {
+        customTextMap = [
+            "sick" => "SUSSY!",
+            "good" => "SUS!",
+            "bad" => "ASS",
+            "shit" => "SHIT!",
+            "miss" => "MISS"
+        ];
+    }
     scoreTxt = new FlxText(0, !Options.downscroll ? healthBar.y + 45 : healthBar.y - 45, FlxG.width, "", 24);
     scoreTxt.setFormat(Paths.font("fonts/liber"), 24, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
     scoreTxt.scrollFactor.set();
