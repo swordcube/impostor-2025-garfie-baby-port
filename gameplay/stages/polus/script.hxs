@@ -3,7 +3,7 @@ import openfl.filters.ShaderFilter;
 var snowAlpha = 0;
 var ext:String = 'gameplay/stages/polus/images/'; // Edit polus to your stage name.
 var vignette:FlxSprite;
-var snow:FlxSprite;
+var snowEmitter:FlxEmitter;
 var rose:FlxSprite;
 var boomBox:BGSprite;
 var blackSprite:FlxSprite;
@@ -55,6 +55,29 @@ function newBGSprite(img:String, ?x:Float, ?y:Float) {
     }
 }
 
+function makeSnowEmitter(x, y, size, width) {
+    final snowEmitter:CustomEmitter = new CustomEmitter(x, y, size);
+    snowEmitter.width = width;
+	snowEmitter.scrollFactor.min.set(1, 1.5);
+	snowEmitter.scrollFactor.max.set(1, 1.5);
+    snowEmitter.start(false, 0.05);
+    
+    snowEmitter.launchAngle.set(100, 160);
+    snowEmitter.angularVelocity.set(-80, 100);
+    
+    snowEmitter.lifespan.set(10); //fuck it
+    snowEmitter.speed.set(500, 700);
+
+    snowEmitter.alpha.set(1, null, 0, 1);
+    snowEmitter.onEmit.add((particle:FlxParticle) -> {
+        particle.alpha = snowAlpha;
+        particle.frames = Paths.getSparrowAtlas("common/snow_particles");
+        particle.animation.addByPrefix('snow', 'snow', 0, false);
+		particle.animation.frameIndex = FlxG.random.int(0, 7);
+    });
+    return snowEmitter;
+}
+
 function onLoadPost(data) {
     var bg = newBGSprite(null, -832, -974).loadFromSheet(ext + 'sky', 'sky', 0);
 	bg.scale.set(2, 2);
@@ -78,6 +101,9 @@ function onLoadPost(data) {
 	
 	floor = newBGSprite(null, -1410, -139).loadFromSheet(ext + 'bg2', 'groundnew', 0);
 	layers[0].add(floor);
+
+    snowEmitter = makeSnowEmitter(floor.x, floor.y - 200, Std.int(floor.width), Std.int(floor.width));
+    layers[2].add(snowEmitter);
 
     var thingy = newBGSprite(null, 2458, -115).loadSparrowFrames(ext + "guylmao");
 	thingy.animation.addByPrefix('idle', 'REACTOR_THING', 24, true);
@@ -157,6 +183,13 @@ function onUpdate(dt:Float) {
 
 function onEvent(e) {
     switch(e.eventType) {
+        case '':
+			switch(e.params.VALUE_1) {
+				case 'speedUp':
+					snowEmitter.speed.set(1400, 1700);
+					snowEmitter.frequency = 0.04;
+			}
+        
         case 'orange':
             var orange = props.get('orange');
             var green = props.get('green');
@@ -235,9 +268,9 @@ function onEvent(e) {
                     orange.y += 100;
 
                 case 'intro':
-                    // TODO: snow
-                    // it's so weird in the actual src code idc to do it rn
-
+                    FlxTween.num(snowAlpha, 1, 2, {startDelay: 7.5}, (f) -> {
+						snowAlpha = f;
+					});
                     FlxTween.tween(game.camHUD, {alpha: 1}, 2.5, {ease: FlxEase.linear, startDelay: 9.5});
 					FlxTween.tween(FlxG.camera, {zoom: 0.5}, 12, {ease: FlxEase.smootherStepInOut});
 
@@ -255,10 +288,9 @@ function onEvent(e) {
                 case 'star':
 					game.isCameraOnForcedPos = true;
 					
-					// FlxTween.num(snowAlpha, 0, 2, {startDelay: 1.5}, (f) -> {
-					// 	snowAlpha = f;
-					// });
-					
+					FlxTween.num(snowAlpha, 0, 2, {startDelay: 1.5}, (f) -> {
+						snowAlpha = f;
+					});
 					FlxTween.tween(props.get('redStar'), {alpha: 0.9}, 5, {ease: FlxEase.linear});
 					FlxTween.tween(props.get('bfStar'), {alpha: 0.9}, 3, {ease: FlxEase.linear, startDelay: 5});
 					
@@ -273,12 +305,12 @@ function onEvent(e) {
 							}
 						});
 				case 'down':
+					FlxTween.num(snowAlpha, 1, 0.5, {startDelay: 1}, (f) -> {
+						snowAlpha = f;
+					});
 					FlxTween.tween(props.get('redStar'), {alpha: 0}, 1, {ease: FlxEase.linear});
                     FlxTween.tween(props.get('bfStar'), {alpha: 0}, 1, {ease: FlxEase.linear});
-					// FlxTween.tween(snow, {alpha: 0.7}, 0.5, {ease: FlxEase.linear, startDelay: 1});
-					// FlxTween.num(snowAlpha, 1, 0.5, {startDelay: 1}, (f) -> {
-					// 	snowAlpha = f;
-					// });
+
 					FlxTween.tween(FlxG.camera, {zoom: 0.5}, 1, {ease: FlxEase.smootherStepInOut});
 					FlxTween.tween(game.camFollow, {x: 800, y: 500}, 1, {
                         ease: FlxEase.smootherStepInOut,
