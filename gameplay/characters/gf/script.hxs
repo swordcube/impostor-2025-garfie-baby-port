@@ -32,6 +32,8 @@ function lookAtTarget(char) {
             idleSuffix = "-left";
     }
     animation.play("turn" + idleSuffix);
+    
+    curDanceStep = 0;
     data.danceSteps = ["danceLeft" + idleSuffix, "danceRight" + idleSuffix];
     
     storedCameraTarget = char;

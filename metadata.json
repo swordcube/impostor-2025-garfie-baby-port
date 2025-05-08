@@ -1,7 +1,10 @@
 {
     "id": "impostor-2025",
+
+    "title": "V.S. Impostor (2025)",
+    "description": "The new V.S. Impostor reboot, now ported to friday again garfie baby!\n\nThis is a personal port, made because the real mod has massive lag spike issues on my PC.\n\n\n\n\nI haven't found a fix for them :D",
+
     "apiVersion": "0.1.0",
-    
     "allowUnsafeScripts": true,
     "levels": [
         {
