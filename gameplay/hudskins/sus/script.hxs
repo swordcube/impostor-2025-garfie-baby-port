@@ -64,7 +64,7 @@ function generatePlayerStats() {
     scoreTxt.scrollFactor.set();
     add(scoreTxt);
     
-    ratingText = new FlxText(0, Options.downscroll ? FlxG.height * 0.8 : FlxG.height * 0.1, 200, '');
+    ratingText = new FlxText(0, Options.downscroll ? (FlxG.height * 0.8) - ((Options.centeredNotes) ? 100 : 0) : (FlxG.height * 0.1) + ((Options.centeredNotes) ? 80 : 0), 200, '');
     ratingText.setFormat(Paths.font("fonts/bahn"), 48, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
     ratingText.screenCenter(FlxAxes.X);
     ratingText.borderSize = 2.5;
@@ -159,7 +159,7 @@ function onBeatHit(beat:Int) {
 }
 
 function setupScoreNum() {
-    var num = new FlxText(0, Options.downscroll ? FlxG.height * 0.85 : FlxG.height * 0.14, 0, '0');
+    var num = new FlxText(0, (Options.downscroll) ? (FlxG.height * 0.85) - ((Options.centeredNotes) ? 100 : 0) : (FlxG.height * 0.14) + ((Options.centeredNotes) ? 80 : 0), 0, '0');
     num.setFormat(Paths.font("fonts/liber"), 65, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
     num.borderSize = 5;
     return num;
