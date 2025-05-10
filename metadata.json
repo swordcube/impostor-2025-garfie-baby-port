@@ -9,13 +9,20 @@
     "levels": [
         {
             "id": "impostor-week1",
+            "name": "Polus Problems",
 
+            "extra": {
+                "beanDiffs": [2, 3]
+            },
             "tagline": "SNOW DAY",
             "characters": [null, "bf", null],
 
             "hiddenSongs": {
                 "story": [],
                 "freeplay": []
+            },
+            "difficulties": {
+                "default": ["normal", "hard"]
             },
             "songs": ["sussus-moogus", "sabotage", "meltdown"],
             "freeplayCategory": "main"

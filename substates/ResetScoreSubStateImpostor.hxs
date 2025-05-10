@@ -1,0 +1,86 @@
+import funkin.gameplay.song.Highscore;
+import funkin.gameplay.song.SongMetadata;
+
+var song:String;
+var difficulty:String;
+var week:Int;
+var contentPack:String;
+
+var bg:FlxSprite;
+var onYes:Bool = false;
+var yesText:FlxText;
+var noText:FlxText;
+
+function new(_song:String, _difficulty:String, ?_week:Int, ?_contentPack:String) {
+    song = _song;
+    difficulty = _difficulty;
+    week = _week ?? -1;
+    contentPack = _contentPack ?? 'default';
+}
+
+function onCreate() {
+    bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+    bg.alpha = 0;
+    bg.scrollFactor.set();
+    add(bg);
+
+    var yo = new FlxText(0, 0, FlxG.width, "Do you want to reset your current score?", 48);
+    yo.setFormat(Paths.font("fonts/liber"), 48, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    yo.screenCenter();
+    yo.y -= 75;
+    yo.borderSize = 1.25;
+    add(yo);
+
+    yesText = new FlxText(0, 0, FlxG.width, "Yes", 48);
+    yesText.setFormat(Paths.font("fonts/liber"), 48, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    yesText.screenCenter();
+    yesText.x -= 200;
+    yesText.borderSize = 1.25;
+    add(yesText);
+    
+    noText = new FlxText(0, 0, FlxG.width, "No", 48);
+    noText.setFormat(Paths.font("fonts/liber"), 48, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    noText.screenCenter();
+    noText.x += 200;
+    noText.borderSize = 1.25;
+    add(noText);
+
+    updateOptions();
+}
+
+function onUpdate(dt:Float) {
+    bg.alpha += dt * 1.5;
+    if (bg.alpha > 0.6) bg.alpha = 0.6;
+
+    if (controls.justPressed.check(Control.UI_LEFT) || controls.justPressed.check(Control.UI_RIGHT)) {
+        FlxG.sound.play(Paths.sound('menus/sfx/scroll'), 1);
+        onYes = !onYes;
+        updateOptions();
+    }
+    if (controls.justPressed.check(Control.BACK)) {
+        FlxG.sound.play(Paths.sound('menus/sfx/cancel'), 1);
+        close();
+    }
+    else if (controls.justPressed.check(Control.ACCEPT)) {
+        var level = Paths.contentMetadata.get(contentPack).levels[week];
+        if (onYes) {
+            if (week == -1)
+                Highscore.resetScoreRecord(Highscore.getScoreRecordID('${contentPack}:${song}', difficulty, contentPack));
+            else
+                Highscore.resetLevelRecord(Highscore.getLevelRecordID('${contentPack}:${level.id}', difficulty, contentPack));
+        }
+        FlxG.sound.play(Paths.sound('menus/sfx/cancel'), 1);
+        close();
+    }
+}
+
+function updateOptions() {
+    var scales:Array<Float> = [0.75, 1];
+    var alphas:Array<Float> = [0.6, 1.25];
+    var confirmInt:Int = onYes ? 1 : 0;
+
+    yesText.alpha = alphas[confirmInt];
+    yesText.scale.set(scales[confirmInt], scales[confirmInt]);
+    noText.alpha = alphas[1 - confirmInt];
+    noText.scale.set(scales[1 - confirmInt], scales[1 - confirmInt]);
+}
