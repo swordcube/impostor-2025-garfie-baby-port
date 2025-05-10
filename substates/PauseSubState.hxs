@@ -1,0 +1,127 @@
+// don't continue if the content pack doesn't
+// match the pack this script came from
+if(!isCurrentPack()) {
+    closeScript();
+    return;
+}
+final defScale:Float = 0.6;
+
+var curSelected:Int = 0;
+
+var buttons:FlxTypedGroup<FlxSprite>;
+var buttonTexts:FlxTypedGroup<FlxText>;
+
+var buttonCallbacks:Array<Function> = [];
+
+function makeButton(x:Float, y:Float, text:String, callback:Function) {
+    final button = new FlxSprite(x, y);
+    button.frames = Paths.getSparrowAtlas('menus/pause/pause_assets');
+    button.animation.addByPrefix('button blank', 'button blank', 0);
+    button.animation.addByPrefix('button select', 'button select', 0);	
+    button.animation.play('button blank');
+	button.scale.set(defScale, defScale);
+	button.updateHitbox();
+
+    final buttonText = new FlxSprite();
+    buttonText.frames = Paths.getSparrowAtlas('menus/pause/pause_assets');
+    buttonText.animation.addByPrefix('$text txt', '$text txt', 0, false);
+    buttonText.animation.play('$text txt');
+    buttonText.scale.set(defScale, defScale);
+    buttonText.updateHitbox();
+    buttonText.x = x + ((button.width - buttonText.width) * 0.5);
+    buttonText.y = y + ((button.height - buttonText.height) * 0.5);
+    buttonTexts.add(buttonText);
+
+    buttonCallbacks.push(callback);
+    return button;
+}
+
+function onCreate(e) {
+    e.cancel();
+    e.musicVolume = 0.7;
+
+    final bg = new FlxSprite().makeSolid(FlxG.width, FlxG.height, FlxColor.BLACK);
+    bg.alpha = 0.4;
+	add(bg);
+
+    final frame = new FlxSprite();
+    frame.frames = Paths.getSparrowAtlas('menus/pause/pause_assets');
+    frame.animation.addByPrefix('pause box mustaaaarrrrdddd', 'pause box mustaaaarrrrdddd', 24, false);
+    frame.animation.play('pause box mustaaaarrrrdddd');
+    frame.scale.set(defScale, defScale);
+    frame.updateHitbox();
+    frame.screenCenter();
+    add(frame);
+    
+    final txt = new FlxSprite(0, 100);
+    txt.frames = Paths.getSparrowAtlas('menus/pause/pause_assets');
+    txt.animation.addByPrefix('paused text', 'paused text', 24, false);
+    txt.animation.play('paused text');
+    txt.scale.set(defScale, defScale);
+    txt.updateHitbox();
+    txt.x = frame.x + ((frame.width - txt.width) * 0.5);
+    add(txt);
+    
+    buttons = new FlxTypedGroup();
+    add(buttons);
+
+    buttonTexts = new FlxTypedGroup();
+    add(buttonTexts);
+    
+    final resume = makeButton(0, txt.y + txt.height + 20, 'resume', close);
+    buttons.add(resume);
+
+    resume.x = frame.x + ((frame.width - resume.width) * 0.5);
+    buttonTexts.members[0].x = frame.x + ((frame.width - buttonTexts.members[0].width) * 0.5);
+    
+    final restart = makeButton(resume.x, resume.y + resume.height, 'restart', restartSong);
+    buttons.add(restart);
+    
+    final options = makeButton(resume.x, restart.y + restart.height, 'option', goToOptions);
+    buttons.add(options);
+    
+    final exit = makeButton(resume.x, options.y + options.height, 'exit', exitToMenu);
+    buttons.add(exit);
+
+    loadPauseMusic();
+    changeSelection(0);
+}
+
+function onUpdate(dt:Float) {
+    if(!inputAllowed)
+        return;
+
+    final wheel:Float = -FlxG.mouse.wheel;
+    if(controls.justPressed.check(Control.UI_UP) || wheel < 0)
+        changeSelection(-1);
+
+    if(controls.justPressed.check(Control.UI_DOWN) || wheel > 0)
+        changeSelection(1);
+
+    if(controls.justPressed.check(Control.ACCEPT))
+        buttonCallbacks[curSelected]();
+}
+
+function playSussyMusic() {
+    var soundShit = Reflect.field(pauseMusic, "_sound"); // accessing _sound directly doesn't work??
+    if (soundShit != null) {
+        canPlayExitMusic = false;
+        FlxG.sound.playMusic(soundShit, pauseMusic.volume);
+
+        FlxG.sound.music.time = pauseMusic.time;
+        FlxTween.tween(FlxG.sound.music, {volume: 0.7}, 0.7);
+    } else
+        playExitMusic();
+}
+
+function changeSelection(diff:Int) {
+    FlxG.sound.play(Paths.sound('menus/sfx/scroll'));
+    
+    buttons.members[curSelected].animation.play("button blank");
+    curSelected = FlxMath.wrap(curSelected + diff, 0, buttons.length - 1);
+    buttons.members[curSelected].animation.play("button select");
+}
+
+function onGoToOptions(e) {
+    playSussyMusic();
+}

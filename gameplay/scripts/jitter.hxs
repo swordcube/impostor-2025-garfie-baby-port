@@ -1,0 +1,4 @@
+function onNoteHit(e) {
+    e.strumHoldJitter = true;
+    e.characterHoldJitter = true;
+}

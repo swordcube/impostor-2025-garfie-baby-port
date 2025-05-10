@@ -1,24 +1,63 @@
+public var ignoreCountdown:Bool = false;
+
+var count:FlxSprite;
+
+function onCountdownStartPost(e) {
+    if(ignoreCountdown) {
+        Conductor.instance.time = -750;
+        return;
+    }
+    count = new FlxSprite().loadGraphic(Paths.image("gameplay/uiskins/sus/images/countdown/prepare"));
+	count.scale.set(0.5, 0.5);
+	count.updateHitbox();
+	count.screenCenter();
+	game.countdown.add(count);
+	
+	var oldY = count.y;
+	count.y = FlxG.height;
+	
+	FlxG.sound.play(Paths.sound("menus/sfx/cancel"));
+	FlxTween.tween(count, {y: oldY}, Conductor.instance.beatLength / 1000, {ease: FlxEase.cubeInOut});
+}
+
+function onCountdownStep(e) {
+    if(ignoreCountdown)
+        e.cancel();
+}
+
 function onCountdownStepPost(e) {
+    // no need to account for ignoreCountdown
+    // since the post function won't get called if
+    // the countdown step event is cancelled
+    
     final sprite:FlxSprite = e.sprite;
     if(e.tween != null)
         e.tween.cancel();
 
-    final time:Float = Conductor.instance.beatLength / 1000;
-    FlxTween.tween(sprite.scale, {x: 0.5, y: 0.5}, time * 0.5);
+    count.frames = sprite.frames;
+    count.animation.copyFrom(sprite.animation);
 
+    final time:Float = Conductor.instance.beatLength / 1000;
+    count.updateHitbox();
+    count.screenCenter();
+    count.scale.set(0.55, 0.55);
+    FlxTween.tween(count.scale, {x: 0.5, y: 0.5}, time * 0.5);
+    
     final counter:Int = e.counter;
     FlxTimer.wait(time, () -> {
-        if(counter < 3) {
-            game.countdown.remove(sprite, true);
-            sprite.destroy();
-        } else {
-            FlxTween.tween(sprite, {y: FlxG.height}, time, {
+        if(counter >= 3) {
+            FlxTween.tween(count, {y: FlxG.height}, time, {
                 ease: FlxEase.cubeInOut,
                 onComplete: (_) -> {
-                    game.countdown.remove(sprite, true);
-                    sprite.destroy();
+                    game.countdown.remove(count, true);
+                    count.destroy();
                 }
             });
         }
     });
+    if(sprite != null) {
+        game.countdown.remove(sprite, true);
+        sprite.destroy();
+        e.sprite = null;
+    }
 }
