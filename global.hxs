@@ -7,6 +7,8 @@ function getStateRedirects() {
         TitleState => null, // this gets set a bit later
         MainMenuState => "ImpostorMenu",
         StoryMenuState => "ImpostorStoryMenu",
+        FreeplayState => "ImpostorFreeplayMenu",
+        OptionsState => "ImpostorOptionsMenu",
     ];
     if(imp_didSplash)
         stateRedirects.set(TitleState, "ImpostorMenu");

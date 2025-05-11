@@ -1,6 +1,6 @@
-public static var curDiff:Int = 1;
-public static var curWeek:Int = 0;
-public static var curPlaying:String = 'bf';
+public static var imp_story_curDiff:Int = 1;
+public static var imp_story_curWeek:Int = 0;
+public static var imp_story_curPlaying:String = 'bf';
 
 var ext:String = 'menus/story/';
 var map:FlxSprite;
@@ -25,7 +25,7 @@ var weekSpots:Array<String> = [
     'polus',
     'mira'
 ];
-var weekMap:Map<String, Bool> = ["" => false];
+var weekMap:Map<String, Dynamic> = ["" => null];
 var loadedWeeks:Array<LevelData> = [];
 var diffs:Array<String> = ['normal', 'hard'];
 
@@ -102,7 +102,7 @@ function onCreate() {
     bb.updateHitbox();
     
     var overlay:FlxSprite = new FlxSprite(0, 0).loadGraphic(Paths.image(ext + 'menu'));
-    var pc:FlxSprite = new FlxSprite(811, 62).loadGraphic(Paths.image(ext + 'storychars/' + curPlaying));
+    var pc:FlxSprite = new FlxSprite(811, 62).loadGraphic(Paths.image(ext + 'storychars/' + imp_story_curPlaying));
     var ct:FlxSprite = new FlxSprite(42.15, 668.3).loadGraphic(Paths.image('menus/common/controls_ex'));
     
     for (i in [notblack, grad, starBG, starFG, dark, map, bb, overlay, ct, pc])
@@ -187,7 +187,7 @@ function isWeekLocked(name:String):Bool {
         return false;
     
     var levelBeforeCompleted:Bool = false;
-    var levelBeforeID:String = '${Paths.forceContentPack}:${level.levelBefore}';
+    var levelBeforeID:String = '${parentContentPack}:${level.levelBefore}';
     var levelBefore:LevelData = (level.levelBefore != null && level.levelBefore.length != 0) ? weekMap.get(levelBeforeID) : null;
     
     if(levelBefore != null) {
@@ -210,10 +210,10 @@ function nahFuckOff() {
 
 function reloadSongList() {
     var songString = '';
-    var leWeek:LevelData = loadedWeeks[curWeek];
+    var leWeek:LevelData = loadedWeeks[imp_story_curWeek];
     
-    pointerLeft.animation.play((curWeek - 1 <= -1) ? 'mid' : 'left');
-    pointerRight.animation.play((curWeek + 1 >= loadedWeeks.length) ? 'mid' : 'right');
+    pointerLeft.animation.play((imp_story_curWeek - 1 <= -1) ? 'mid' : 'left');
+    pointerRight.animation.play((imp_story_curWeek + 1 >= loadedWeeks.length) ? 'mid' : 'right');
     
     reloadDiff();
     
@@ -232,7 +232,7 @@ function reloadSongList() {
     songsText.text = songString;
     if (tweenMap != null) tweenMap.cancel();
     
-    tweenMap = FlxTween.tween(map, {x: 645 - curWeek * 500}, 1, {
+    tweenMap = FlxTween.tween(map, {x: 645 - imp_story_curWeek * 500}, 1, {
         ease: FlxEase.elasticOut,
         onComplete: function(twn:FlxTween) {
             tweenMap = null;
@@ -242,13 +242,13 @@ function reloadSongList() {
 }
 
 function reloadDiff() {
-    diffText.text = 'Difficulty: ' + (diffs[curDiff - 1] == 'hard' ? 'HARD' : 'NORMAL');
-    var leWeek:LevelData = loadedWeeks[curWeek];
+    diffText.text = 'Difficulty: ' + (diffs[imp_story_curDiff - 1] == 'hard' ? 'HARD' : 'NORMAL');
+    var leWeek:LevelData = loadedWeeks[imp_story_curWeek];
     
-    var weekDiff = leWeek.extra.beanDiffs[curDiff - 1];
+    var weekDiff = leWeek.extra.beanDiffs[imp_story_curDiff - 1];
     for (i in beans) i.animation.curAnim.curFrame = ((Reflect.getProperty(i, "ID") >= weekDiff) ? 0 : 1);
 
-    var recordID = Highscore.getLevelRecordID('${parentContentPack}:${leWeek.id}', diffs[curDiff - 1], parentContentPack);
+    var recordID = Highscore.getLevelRecordID('${parentContentPack}:${leWeek.id}', diffs[imp_story_curDiff - 1], parentContentPack);
     var record = Highscore.getLevelRecord(recordID);
     intendedScore = record.score;
     
@@ -257,7 +257,7 @@ function reloadDiff() {
     var weekAccuracy:Float = 0;
     for (i in 0...leWeek.songs.length)
     {
-        weekAccuracy += Highscore.getWeekRating(leWeek.songs[i][0], curDiff);
+        weekAccuracy += Highscore.getWeekRating(leWeek.songs[i][0], imp_story_curDiff);
     }
     */
     // the math is weekAccuracy value divided by the amount of songs in the week
@@ -266,20 +266,20 @@ function reloadDiff() {
 
 function changeDiff() {
     FlxG.sound.play(Paths.sound('menus/sfx/diffcheck'));
-    curDiff = (curDiff == 1 ? 2 : 1);
+    imp_story_curDiff = (imp_story_curDiff == 1 ? 2 : 1);
     reloadDiff();
 }
 
 function changeWeek(?change:Int):Void {
     change ??= 0;
-    curWeek += change;
-    if (curWeek < 0) {
-        curWeek = 0;
+    imp_story_curWeek += change;
+    if (imp_story_curWeek < 0) {
+        imp_story_curWeek = 0;
         nahFuckOff();
         return;
     }
-    if (curWeek >= loadedWeeks.length) {
-        curWeek = loadedWeeks.length - 1;
+    if (imp_story_curWeek >= loadedWeeks.length) {
+        imp_story_curWeek = loadedWeeks.length - 1;
         nahFuckOff();
         return;
     }
@@ -289,7 +289,7 @@ function changeWeek(?change:Int):Void {
 function selectWeek() {
     FlxG.sound.play(Paths.sound('menus/sfx/select'));
 
-    var leWeek:LevelData = loadedWeeks[curWeek];
+    var leWeek:LevelData = loadedWeeks[imp_story_curWeek];
     selectedWeek = true;
 
     var pendingPlaylist:Array<String> = [];
@@ -303,7 +303,7 @@ function selectWeek() {
     
     FlxG.switchState(() -> return new PlayState({
         song: PlayState.storyPlaylist.shift(),
-        difficulty: diffs[curDiff - 1],
+        difficulty: diffs[imp_story_curDiff - 1],
         // mix: currentMix,
         mod: parentContentPack,
         isStoryMode: true
@@ -336,9 +336,9 @@ function onUpdate(dt:Float) {
             FlxG.switchState(new TitleState());
             FlxG.sound.play(Paths.sound('menus/sfx/cancel'));
         }
-        if (FlxG.keys.justPressed.R)  {
+        if (controls.justPressed.check(Control.RESET)) {
             persistentUpdate = false;
-            openSubState(new ScriptedSubState('ResetScoreSubStateImpostor', ['', diffs[curDiff - 1], curWeek, parentContentPack]));
+            openSubState(new ScriptedSubState('ResetScoreSubStateImpostor', ['', diffs[imp_story_curDiff - 1], imp_story_curWeek, parentContentPack]));
         }
     }
 }

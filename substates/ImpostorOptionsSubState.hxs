@@ -1,0 +1,331 @@
+import funkin.backend.Main;
+
+var title:String;
+var optionsArray:Array<Dynamic>;
+
+var descText:FlxText;
+var grpOptions:FlxTypedGroup<FlxText>;
+
+var checkboxGroup:FlxTypedGroup<FlxSprite>;
+var grpTexts:FlxTypedGroup<FlxText>;
+
+var curSelected:Int = 0;
+var inputAllowed:Bool = false;
+
+var holdTimer:Float = 0;
+
+function new(_optionsToSetup:String) {
+    switch(_optionsToSetup) {
+        case "Gameplay":
+            optionsArray = [
+                {
+                    name: "Downscroll",
+                    description: "Scrolls the notes downwards instead of upwards.",
+                    
+                    id: "downscroll",
+                    type: "bool"
+                },
+                {
+                    name: "Centered Notes",
+                    description: "Puts the player notes in the center of the screen\nand hides the opponent notes.",
+        
+                    id: "centeredNotes",
+                    type: "bool"
+                },
+                {
+                    name: "Use Killers",
+                    description: "Changes whether or not killers are used\nfor judging notes during gameplay.",
+        
+                    id: "useKillers",
+                    type: "bool"
+                },
+                {
+                    name: "Miss Sounds",
+                    description: "Changes whether or not miss sounds are played during gameplay.",
+        
+                    id: "missSounds",
+                    type: "bool"
+                },
+                {
+                    name: "Song Offset",
+                    description: "Changes how offset the music is from notes (in MS).\nMainly useful for headphones with lots of latency.",
+        
+                    id: "songOffset",
+                    type: "int",
+                    
+                    params: {min: -5000, max: 5000, step: 5}
+                },
+                {
+                    name: "Hit Window",
+                    description: "Changes how early and late you can hit notes (in MS).",
+        
+                    id: "hitWindow",
+                    type: "int",
+
+                    params: {min: 5, max: 180, step: 5}
+                },
+            ];
+        case "Appearance":
+            optionsArray = [
+                {
+                    name: "Antialiasing",
+                    description: "Provides a very tiny performance boost when disabled\nat the cost of worser looking graphics.",
+                
+                    id: "antialiasing",
+                    type: "bool",
+        
+                    callback: (value:Dynamic) -> {
+                        FlxG.allowAntialiasing = value;
+                        FlxG.stage.quality = (FlxG.allowAntialiasing) ? 0 : 2; // 0 = best, 2 = worst
+                    }
+                },
+                {
+                    name: "Flashing Lights",
+                    description: "Whether or not flashing lights can appear in the menus or during gameplay.\nThis may not work for all mods, be warned!",
+                
+                    id: "flashingLights",
+                    type: "bool"
+                },
+                {
+                    name: "FPS Counter",
+                    description: "Whether or not your FPS will be shown in\nthe top left corner of the screen.",
+                
+                    id: "fpsCounter",
+                    type: "bool",
+        
+                    callback: (value:Dynamic) -> Main.statsDisplay.visible = value
+                },
+                {
+                    name: "HUD Type",
+                    description: "Changes how the HUD looks during gameplay.\nThis only works if the song has the default HUD skin!",
+        
+                    id: "hudType",
+                    type: "list",
+                    
+                    params: {items: ["Classic", "Psych"]}
+                }
+            ];
+        case "Miscellanous":
+            optionsArray = [
+                {
+                    name: "Auto Pause",
+                    description: "Changes whether or not the game will automatically\npause when the window is unfocused.",
+        
+                    id: "autoPause",
+                    type: "bool",
+        
+                    callback: (value:Dynamic) -> FlxG.autoPause = value
+                },
+                {
+                    name: "Verbose Logging",
+                    description: "Whether or not detailed engine logs can appear for debugging purposes.",
+                
+                    id: "verboseLogging",
+                    type: "bool"
+                },
+                {
+                    name: "Multicore Preloading",
+                    description: "Whether or not the game should use multiple threads to preload gameplay assets.\nTurn this back off if you're experiencing issues preloading images/sounds.",
+                
+                    id: "multicoreLoading",
+                    type: "bool"
+                },
+                {
+                    name: "Framerate",
+                    description: "Changes the target FPS the game will try to run at.",
+                
+                    id: "frameRate",
+                    type: "int",
+                    
+                    params: {min: 5, max: 1000, step: 5}, // actual minimum is 10, will be set to unlimited if set below 10
+                    callback: (value:Dynamic) -> {
+                        final fps:Int = value;
+                        if(fps < 10) {
+                            // unlimited
+                            FlxG.updateFramerate = 0;
+                            FlxG.drawFramerate = 0;
+                        } else {
+                            // capped
+                            if(fps > FlxG.drawFramerate) {
+                                FlxG.updateFramerate = fps;
+                                FlxG.drawFramerate = fps;
+                            } else {
+                                FlxG.drawFramerate = fps;
+                                FlxG.updateFramerate = fps;
+                            }
+                        }
+                    }
+                }
+            ];
+    }
+    title = _optionsToSetup;
+}
+
+function onCreate() {
+    var titleText:FlxText = new FlxText(500,106,0,title);
+    titleText.setFormat(Paths.font("fonts/bahn"), 25, 0xFFFFFF, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    add(titleText);
+
+    descText = new FlxText(500,630,640,'Ghost Tapping is an overall bad option and you should');
+    descText.setFormat(Paths.font("fonts/bahn"), 25, 0xFFFFFF, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    descText.borderSize = 1;
+    descText.y = 630 - descText.height;
+    add(descText);
+
+    grpOptions = new FlxTypedGroup();
+    add(grpOptions);
+
+    checkboxGroup = new FlxTypedGroup();
+    add(checkboxGroup);
+
+    grpTexts = new FlxTypedGroup();
+    add(grpTexts);
+
+    for(i in 0...optionsArray.length) {
+        var optionText:FlxText = new FlxText(0, 160+(30 * i), -1, optionsArray[i].name);
+        optionText.setFormat(Paths.font("fonts/bahn"), 25, 0xFFFFFF, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+        optionText.borderSize = 1;
+        Reflect.setProperty(optionText, "ID", i);
+        optionText.x += 500;
+        grpOptions.add(optionText);
+
+        if (optionsArray[i].type == 'bool') {
+            var checkbox:FlxSprite = new FlxSprite(1140, optionText.y);
+            checkbox.loadGraphic(Paths.image('menus/options/impastacheckbox'), true, 30, 30);
+            checkbox.animation.add('off', [0], 0, false);
+            checkbox.animation.add('on', [1], 0, false);
+            checkbox.animation.play((Reflect.getProperty(Options, optionsArray[i].id) == true) ? 'on' : 'off');
+            checkbox.x -= checkbox.width;
+            Reflect.setProperty(checkbox, "ID", i);
+            checkboxGroup.add(checkbox);
+        } else if (optionsArray[i].type != 'button' && optionsArray[i].type != 'label') {
+            var valueText:FlxText = new FlxText(500,optionText.y, 640, Std.string(Reflect.getProperty(Options, optionsArray[i].id)));// optionText.width + 60);
+            valueText.setFormat(Paths.font("fonts/bahn"), 25, 0x62E0CF, FlxTextAlign.RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+            //valueText.copyAlpha = true;
+            Reflect.setProperty(valueText, "ID", i);
+            valueText.borderSize = 1;
+            grpTexts.add(valueText);
+        }
+    }
+    changeSelection();
+}
+
+function onUpdate(dt:Float) {
+    if(!inputAllowed) {
+        inputAllowed = true;
+        return;
+    }
+    if(controls.justPressed.check(Control.UI_UP))
+        changeSelection(-1);
+
+    if(controls.justPressed.check(Control.UI_DOWN))
+        changeSelection(1);
+
+    if(controls.justPressed.check(Control.BACK)) {
+        FlxG.sound.play(Paths.sound('menus/sfx/cancel'));
+        Options.save();
+        close();
+    }
+    var curOption = optionsArray[curSelected];
+    switch(curOption.type) {
+        case "bool":
+            if(controls.justPressed.check(Control.ACCEPT)) {
+                var newValue:Bool = !(Reflect.getProperty(Options, curOption.id) == true);
+                Reflect.setProperty(Options, curOption.id, newValue);
+                
+                for (checkbox in checkboxGroup) {
+                    if (Reflect.getProperty(checkbox, "ID") == curSelected)
+                        checkbox.animation.play((newValue == true) ? 'on' : 'off');
+                }
+                if(curOption.callback != null)
+                    curOption.callback(newValue);
+
+                FlxG.sound.play(Paths.sound('menus/sfx/scroll'));
+            }
+
+        case "float", "int":
+            var isInt:Bool = (curOption.type == 'int') || (curOption.params.decimals <= 0);
+
+            var left:Bool = controls.pressed.check(Control.UI_LEFT);
+            var right:Bool = controls.pressed.check(Control.UI_RIGHT);
+
+            var justPressed:Bool = controls.justPressed.check(Control.UI_LEFT) || controls.justPressed.check(Control.UI_RIGHT);
+            var pressed:Bool = left || right;
+
+            if(justPressed || holdTimer >= 0.5) {
+                var value:Float = FlxMath.bound(Reflect.getProperty(Options, curOption.id) + (curOption.params.step * ((left) ? -1 : 1)), curOption.params.min, curOption.params.max);
+                if(!isInt)
+                    value = FlxMath.roundDecimal(value, curOption.params.decimals);
+                else
+                    value = Std.int(value);
+
+                Reflect.setProperty(Options, curOption.id, value);
+                for (text in grpTexts) {
+                    if (Reflect.getProperty(text, "ID") == curSelected)
+                        text.text = Std.string(value);
+                }
+                if(justPressed)
+                    FlxG.sound.play(Paths.sound('menus/sfx/scroll'));
+                
+                if(holdTimer >= 0.5)
+                    holdTimer = 0.45;
+
+                if(curOption.callback != null)
+                    curOption.callback(value);
+            }
+            if(pressed)
+                holdTimer += dt;
+            else
+                holdTimer = 0;
+
+        case "list":
+            var items:Array<String> = curOption.params.items;
+
+            var left:Bool = controls.pressed.check(Control.UI_LEFT);
+            var justPressed:Bool = controls.justPressed.check(Control.UI_LEFT) || controls.justPressed.check(Control.UI_RIGHT);
+
+            if(justPressed) {
+                var value:String = Reflect.getProperty(Options, curOption.id);
+                var itemIndex:Int = FlxMath.wrap(items.indexOf(value) + ((left) ? -1 : 1), 0, items.length - 1);
+    
+                Reflect.setProperty(Options, curOption.id, items[itemIndex]);
+                for (text in grpTexts) {
+                    if (Reflect.getProperty(text, "ID") == curSelected)
+                        text.text = items[itemIndex];
+                }
+                if(curOption.callback != null)
+                    curOption.callback(value);
+
+                FlxG.sound.play(Paths.sound('menus/sfx/scroll'));
+            }
+    }
+}
+
+function changeSelection(?by:Int) {
+    by ??= 0;
+    holdTimer = 0;
+
+    curSelected += by;
+    if (curSelected < 0) curSelected = optionsArray.length - 1;
+    if (curSelected >= optionsArray.length) curSelected = 0;
+
+    descText.text = optionsArray[curSelected].description;
+    descText.y = 630 - descText.height;
+
+    for (item in grpOptions.members) {
+        item.alpha = 0.6;
+        if(curSelected == Reflect.getProperty(item, "ID"))
+            item.alpha = 1;
+    }
+    for (text in grpTexts) {
+        text.alpha = 0.6;
+        if (Reflect.getProperty(text, "ID") == curSelected)
+            text.alpha = 1;
+    }
+    for (checkbox in checkboxGroup) {
+        checkbox.alpha = 0.6;
+        if (Reflect.getProperty(checkbox, "ID") == curSelected)
+            checkbox.alpha = 1;
+    }
+    FlxG.sound.play(Paths.sound('menus/sfx/scroll'));
+}

@@ -12,7 +12,15 @@
             "name": "Polus Problems",
 
             "extra": {
-                "beanDiffs": [2, 3]
+                "beanDiffs": [2, 3],
+                "songIcons": {
+                    "sussus-moogus": "red",
+                    "sabotage": "red",
+                    "meltdown": "red"
+                },
+                "songColors": {
+                    "sussus-moogus": [212, 0, 45]
+                }
             },
             "tagline": "SNOW DAY",
             "characters": [null, "bf", null],

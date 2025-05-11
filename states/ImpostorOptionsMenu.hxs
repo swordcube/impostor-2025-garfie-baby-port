@@ -1,0 +1,138 @@
+var ext:String = 'menus/options/';
+var opts:FlxTypedGroup<FlxSprite>;
+var boundaries:Int;
+var curSel:Int = 0;
+var boiText:FlxText;
+var boiText2:FlxText;
+var boiImage:FlxSprite;
+
+var buttons:Array<Dynamic> = [ // buttons! add translation later!
+    // 106 + 75 + 75
+    [116, 106, 0, 'Set Song Offset'],
+    [116, 181, 1, 'Gameplay'],
+    [116, 181+75, 1, 'Appearance'],
+    [116, 181+150, 1, 'Miscellanous'],
+    [116, 181+225, 1, 'Controls']
+];
+
+function changeSel(by = 0, silent = 1) {
+    /*
+        Changes Selection by the amount of by Yeah you know what this does
+        - IF THE BY IS SET TO 0, THEN IT WILL NOT MAKE A NOISE
+    */
+    FlxG.sound.play(Paths.sound('menus/sfx/scroll'), silent);
+    curSel += by;
+    if(curSel > boundaries - 1) curSel = 0;
+    if(curSel < 0) curSel = boundaries - 1;
+    
+    opts.forEach(function(spr:FlxSprite){
+        spr.animation.curAnim.curFrame = (curSel == Reflect.getProperty(spr, "ID") ? 1 : 0);
+    });
+}
+
+function onCreate() {
+    persistentUpdate = true;
+
+    var welcomeHereBruh:Array<String> = [
+        'Vs Impostor v1.0.2',
+		'in a good world this mods name is still updog'
+    ];
+    boundaries = buttons.length;
+    var notblack:FlxSprite = new FlxSprite(0,0).makeGraphic(FlxG.width,FlxG.height,0x06080C);
+    add(notblack);
+
+    opts = new FlxTypedGroup(); // GROUP ON GOD!
+
+    var stars:FlxSprite = new FlxSprite(0,0).loadGraphic(Paths.image('gameplay/stages/polus/images/stars'));
+    stars.scale.set(0.5,0.5);
+    stars.updateHitbox();
+    add(stars);
+
+    var bb:FlxSprite = new FlxSprite(0,0).loadGraphic(Paths.image('menus/common/blackbars'));
+    bb.scale.set(2,2);
+    bb.updateHitbox();
+    add(bb);
+
+    // Control panel thing
+    var ct:FlxSprite = new FlxSprite(42.15, 668.3).loadGraphic(Paths.image('menus/common/controls'));
+    add(ct);
+
+    var phone:FlxSprite = new FlxSprite(79, 54).loadGraphic(Paths.image(ext + 'phone'));
+    add(phone);
+    // please come up with better variable names im begging bro
+    boiText = new FlxText(500,110,640,welcomeHereBruh[0]);
+    boiText.setFormat(Paths.font("fonts/bahn"), 50, 0xFFFFFF, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    boiText.borderSize = 1;
+    boiText.y -= boiText.height/2;
+    add(boiText);
+
+    boiImage = new FlxSprite(500, 150).loadGraphic(Paths.image(ext + 'red_art'));
+    add(boiImage);
+
+    boiText2 = new FlxText(500,510,640,welcomeHereBruh[1]);
+    boiText2.setFormat(Paths.font("fonts/bahn"), 25, 0xFFFFFF, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    boiText2.borderSize = 1;
+    add(boiText2);
+    // MAKE BUTTONS
+    add(opts);
+    for(i in 0...buttons.length) {
+        var but:FlxSprite = new FlxSprite(buttons[i][0], buttons[i][1]);
+        but.frames = Paths.getSparrowAtlas('menus/common/blankbutton');
+        but.animation.addByPrefix('idle', 'buttonFP instance 1', 0, false);
+        but.animation.play('idle');
+        Reflect.setProperty(but, "ID", i);
+        //  It's not letting me do it the normal and not stupid way
+        var txt:FlxText = new FlxText(buttons[i][0] + 9.4, buttons[i][1] + 11.35, -1, buttons[i][3]);
+        txt.setFormat(Paths.font("fonts/notosans"), 35, FlxColor.WHITE, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+        txt.borderSize = 2.5;
+        Reflect.setProperty(txt, "ID", i);
+        opts.add(but);
+        add(txt);
+    }
+    changeSel(0, 0);
+}
+
+function doItBruh() {
+    if(curSel >= 1) {
+        boiText.alpha = 0;
+        boiImage.alpha = 0;
+        boiText2.alpha = 0;
+    }
+    persistentUpdate = false;
+    switch(curSel) {
+        case 0:
+            trace("TODO: that shit");
+            // FlxG.switchState(new NoteOffsetState());
+        case 1:
+            openSubState(new ScriptedSubState("ImpostorOptionsSubState", ["Gameplay"]));
+        case 2:
+            openSubState(new ScriptedSubState("ImpostorOptionsSubState", ["Appearance"]));
+        case 3:
+            openSubState(new ScriptedSubState("ImpostorOptionsSubState", ["Miscellanous"]));
+        case 4:
+            openSubState(new ScriptedSubState("ImpostorControlsMenu"));
+    }
+}
+
+function onUpdate(dt:Float) {
+    if(controls.justPressed.check(Control.UI_DOWN))
+        changeSel(1, 1);
+    
+    if(controls.justPressed.check(Control.UI_UP))
+        changeSel(-1, 1);
+
+    if(controls.justPressed.check(Control.ACCEPT))
+        doItBruh();
+    
+    if(controls.justPressed.check(Control.BACK)) {
+        FlxG.switchState((OptionsState.lastParams.exitState != null) ? OptionsState.lastParams.exitState : (() -> return new MainMenuState()));
+        FlxG.sound.play(Paths.sound('menus/sfx/cancel'));
+    }
+}
+
+function onSubStateClose() {
+    boiText.alpha = 1;
+    boiImage.alpha = 1;
+    boiText2.alpha = 1;
+    Options.save();
+}

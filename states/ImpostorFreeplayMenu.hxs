@@ -1,0 +1,414 @@
+public static var imp_freeplay_curWeek:Int = 0;
+public static var imp_freeplay_curSong:Int = 0;
+public static var imp_freeplay_curDiff:Int = 1;
+
+final ext:String = 'menus/freeplay/';
+
+var opts:FlxTypedGroup<FlxSprite>;
+var rankgrp:FlxTypedGroup<RankIcon>;
+var opsn:FlxTypedGroup<FlxText>;
+var opsc:FlxTypedGroup<FlxText>;
+
+var diffText:FlxText;
+var curPort:String;
+var scText:FlxText;
+var lerpScore:Int = 0;
+var intendedScore:Int;
+
+var port:FlxSprite;
+var dark:FlxSprite;
+var starFG:FlxBackdrop;
+var starBG:FlxBackdrop;
+var songs:Array<Dynamic> = []; // :Array<SongMetadata> = [];
+var songComposers:Array<String> = []; // :Array<SongMetadata> = [];
+var isCurWeekLocked:Bool;
+var weekText:FlxText;
+var portraitData:Array<String> = ['red', 'green'];
+var diffs:Array<String> = ['normal', 'hard'];
+
+var loadedWeeks:Array<LevelData> = [];
+var weekMap:Map<String, Dynamic> = ["" => null];
+
+/**
+ * To prevent spamming.
+ */
+var controlsLocked:Bool = false;
+
+function makeRankIcon(?x:Float, ?y:Float) {
+    var icon = new FlxSprite(x ?? 0.0, y ?? 0.0);
+    icon.frames = Paths.getSparrowAtlas('menus/common/ranks');
+    icon.animation.addByPrefix('S', 'S', 0, false);
+    icon.animation.addByPrefix('A', 'A', 0, false);
+    icon.animation.addByPrefix('B', 'B', 0, false);
+    icon.animation.addByPrefix('C', 'C', 0, false);
+    icon.animation.addByPrefix('D', 'D', 0, false);
+    icon.animation.addByPrefix('F', 'F', 0, false);
+    return icon;
+}
+
+function setAccOnRankIcon(icon:RankIcon, accuracy:Float) {
+    icon.visible = accuracy != 0.0;
+		
+    if (accuracy != 0.0) {
+        final offsets:Map<String, Array<Int>> = [
+            'S' => [0, 0],
+            'A' => [-25, -10],
+            'B' => [-50, -10],
+            'C' => [-50, -15],
+            'D' => [-55, -8],
+            'F' => [-50, -15]
+        ];
+        if (accuracy >= 95) rank = 'S';
+        else if (accuracy >= 90) rank = 'A';
+        else if (accuracy >= 80) rank = 'B';
+        else if (accuracy >= 70) rank = 'C';
+        else if (accuracy >= 60) rank = 'D';
+        else rank = 'F';
+        
+        icon.animation.play(rank);
+        icon.offset.set(offsets[rank][0], offsets[rank][1]);
+    }
+}
+
+function onCreate() {
+    persistentUpdate = true;
+
+    imp_didSplash = true;
+    imp_alreadyBeenInMenu = true;
+    imp_titleTransitioning = true;
+    
+    if(FlxG.sound.music == null || !FlxG.sound.music.playing)
+        CoolUtil.playMenuMusic();
+
+    var notblack:FlxSprite = new FlxSprite(0, 0).makeSolid(FlxG.width, FlxG.height, 0x06080C);
+    add(notblack);
+    
+    var shader:CustomShader = new CustomShader('outline');
+    shader.setFloat("dist", 2);
+    shader.setFloatArray("outlineColor", [255, 255, 255]);
+    
+    opts = new FlxTypedGroup(); // GROUP ON GOD!
+    rankgrp = new FlxTypedGroup(); // GROUP ON GOD!
+    opsn = new FlxTypedGroup(); // GROUP ON GOD!
+    opsc = new FlxTypedGroup(); // GROUP ON GOD!
+    
+    starFG = new FlxBackdrop(Paths.image('menus/common/starFG'));
+    starFG.scrollFactor.set();
+    
+    starBG = new FlxBackdrop(Paths.image('menus/common/starBG'));
+    starBG.scrollFactor.set();
+    
+    var mainbackground:FlxSprite = new FlxSprite(-121, 226.8).loadGraphic(Paths.image('menus/common/bg'));
+    
+    dark = new FlxSprite(450, 0).loadGraphic(Paths.image(ext + 'dark2'));
+    dark.scale.set(1, 1);
+    dark.updateHitbox();
+    dark.blend = 0; // 0 = add
+    
+    port = new FlxSprite(100, 0).loadGraphic(Paths.image(ext + 'portrait'), true, 720, 720);
+    port.shader = shader;
+    for (i in 0...portraitData.length)
+        port.animation.add(portraitData[i], [i], 0, false);
+
+    port.x = FlxG.width - port.width;
+    
+    var bb:FlxSprite = new FlxSprite(0, 0).loadGraphic(Paths.image('menus/common/blackbars'));
+    bb.scale.set(2, 2);
+    bb.updateHitbox();
+    
+    var ct:FlxSprite = new FlxSprite(42.15, 668.3).loadGraphic(Paths.image('menus/common/controls_freeplay'));
+    
+    /*var red:Character = new Character(0, 0, 'red');
+        red.x=(FlxG.width/1.1)-red.width;
+        red.y=FlxG.height-red.height;
+        red.scale.set(0.6,0.6);
+        red.flipX = true;
+        red.animation.curAnim.looped = true;
+        add(red); */
+    
+    var overlay:FlxSprite = new FlxSprite(0, 0).loadGraphic(Paths.image(ext + 'menu'));
+    
+    diffText = new FlxText(370, 15, -1, 'Difficulty');
+    diffText.setFormat(Paths.font("fonts/bahn"), 35, 0xFFFFFF, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    scText = new FlxText(370, 60, -1, 'Score');
+    scText.setFormat(Paths.font("fonts/bahn"), 35, 0xFFFFFF, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    
+    var storyText:FlxText = new FlxText(40, 20, -1, 'Freeplay');
+    storyText.setFormat(Paths.font("fonts/bahn"), 60, 0xFFFFFF, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    
+    for (i in [starBG, starFG, mainbackground, dark, port])
+        add(i);
+    
+    add(opts);
+    add(opsn);
+    add(opsc);
+    add(rankgrp);
+    
+    for (i in [bb, overlay, ct])
+        add(i);
+    
+    weekText = new FlxText(40, 125, -1, 'Week FUCK!');
+    weekText.setFormat(Paths.font("fonts/bahn"), 60, 0xFFFFFF, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    
+    for (i in [storyText, diffText, scText, weekText]) {
+        i.borderSize = 2.5;
+        add(i);
+    }
+    var meta = Paths.contentMetadata.get(parentContentPack);
+    for (i in 0...meta.levels.length) {
+        var weekFile:LevelData = meta.levels[i];
+        weekMap.set(weekFile.id, weekFile);
+        loadedWeeks.push(weekFile);
+    }
+    reloadWeekShit();
+    changeSong(0);
+    refreshDiffText();
+}
+
+function nahFuckOff() {
+    FlxG.sound.play(Paths.sound('menus/sfx/locked'));
+    FlxG.camera.shake(0.003, 0.1, null, true, FlxAxes.XY);
+}
+
+function changeWeek(by:Int) {
+    imp_freeplay_curWeek += by;
+    if (imp_freeplay_curWeek < 0) {
+        imp_freeplay_curWeek = 0;
+        nahFuckOff();
+        return;
+    }
+    if (imp_freeplay_curWeek >= loadedWeeks.length) {
+        imp_freeplay_curWeek = loadedWeeks.length - 1;
+        nahFuckOff();
+        return;
+    }
+    weekText.text = 'Week ' + (imp_freeplay_curWeek + 1);
+    reloadWeekShit();
+}
+
+function isWeekLocked(name:String):Bool {
+    final level:LevelData = weekMap.get(name);
+    if(level == null)
+        return false;
+    
+    var levelBeforeCompleted:Bool = false;
+    var levelBeforeID:String = '${parentContentPack}:${level.levelBefore}';
+    var levelBefore:LevelData = (level.levelBefore != null && level.levelBefore.length != 0) ? weekMap.get(levelBeforeID) : null;
+    
+    if(levelBefore != null) {
+        for(diffs in levelBefore.difficulties) {
+            for(diff in diffs) {
+                if(Highscore.getLevelRecord(Highscore.getLevelRecordID(levelBeforeID, diff)).score > 0) {
+                    levelBeforeCompleted = true;
+                    break;
+                }
+            }
+        }
+    }
+    return !level.startUnlocked && (level.levelBefore != null && level.levelBefore.length != 0 && !levelBeforeCompleted);
+}
+
+function changeSong(by:Int) {
+    imp_freeplay_curSong += by;
+    if (by != 0) FlxG.sound.play(Paths.sound('menus/sfx/scroll'));
+    
+    if (imp_freeplay_curSong < 0) {
+        imp_freeplay_curSong = 0;
+        nahFuckOff();
+        return;
+    }
+    if (imp_freeplay_curSong >= songs.length) {
+        imp_freeplay_curSong = songs.length - 1;
+        nahFuckOff();
+        return;
+    }
+    if (curPort != songs[imp_freeplay_curSong][2]) {
+        curPort = songs[imp_freeplay_curSong][2];
+        port.animation.play(curPort);
+        port.x = 1280;
+        FlxTween.tween(port, {x: 1280 - port.width}, 0.25, {ease: FlxEase.quadOut});
+    }
+    
+    var colors:Array<Int> = Reflect.field(loadedWeeks[imp_freeplay_curWeek].extra.songColors, songs[imp_freeplay_curSong][0]);
+    if (colors != null && colors.length == 3) {
+        var newColor:Int = FlxColor.fromRGB(colors[0], colors[1], colors[2]);
+        
+        // Only tween if the color is different
+        if (dark.color != newColor)
+        {
+            dark.color = newColor;
+            dark.x = 1280; // Start off-screen
+            FlxTween.tween(dark, {x: 1280 - dark.width}, 0.25, {ease: FlxEase.quadOut});
+        }
+    }
+    
+    function applyToSpr(spr:FlxSprite, xOff:Float, yOff:Float)
+    {
+        FlxTween.cancelTweensOf(spr);
+        FlxTween.tween(spr,
+            {
+                x: xOff + (Math.abs(imp_freeplay_curSong - Reflect.getProperty(spr, "ID")) * 50),
+                y: yOff - (imp_freeplay_curSong * 125) + (Reflect.getProperty(spr, "ID") * 125) + 125,
+                alpha: 1 - (Math.abs(imp_freeplay_curSong - Reflect.getProperty(spr, "ID")) * 0.5) // (imp_freeplay_curSong == spr.ID ? 1 : 0.5)//
+            }, 0.25, {ease: FlxEase.backOut});
+    }
+    
+    opts.forEach((spr) -> applyToSpr(spr, 35, 270));
+    opsn.forEach((spr) -> applyToSpr(spr, 50, 282));
+    opsc.forEach((spr) -> applyToSpr(spr, 50, 345));
+    
+    refreshDiffText();
+}
+
+function startSong()
+{
+    if (isWeekLocked)
+        nahFuckOff();
+    else {
+        controlsLocked = true;
+        
+        FlxG.sound.play(Paths.sound('menus/sfx/select'));
+        FlxG.switchState(() -> return new PlayState({
+            song: songs[imp_freeplay_curSong][0],
+            difficulty: diffs[imp_freeplay_curDiff - 1],
+            mod: parentContentPack
+        }));
+        FlxG.sound.music.fadeOut(0.16, 0);
+    }
+}
+
+function changeDiff()
+{
+    FlxG.sound.play(Paths.sound('menus/sfx/diffcheck'));
+    imp_freeplay_curDiff = (imp_freeplay_curDiff == 1 ? 2 : 1);
+    refreshDiffText();
+}
+
+function refreshDiffText()
+{
+    var record = Highscore.getScoreRecord(Highscore.getScoreRecordID(songs[imp_freeplay_curSong][0], diffs[imp_freeplay_curDiff - 1], null, parentContentPack));
+    intendedScore = record.score;
+    
+    diffText.text = 'Difficulty: ' + (diffs[imp_freeplay_curDiff - 1] == 'hard' ? 'HARD' : 'NORMAL');
+    for (i in 0...rankgrp.length) {
+        var record = Highscore.getScoreRecord(Highscore.getScoreRecordID(songs[i][i], diffs[imp_freeplay_curDiff - 1], null, parentContentPack));
+        setAccOnRankIcon(rankgrp.members[i], record.accuracy * 100);
+    }
+}
+
+function reloadWeekShit() {
+    var i = imp_freeplay_curWeek;
+    weekText.text = 'Week ' + (imp_freeplay_curWeek + 1);
+    
+    // I just want everyone who reads the source to know i spent too much time getting those fucking rank icons to work - orbyy
+    
+    for (sb in opts.members)
+    {
+        sb.destroy();
+    }
+    for (sb in opsn.members)
+    {
+        sb.destroy();
+    }
+    for (sb in opsc.members)
+    {
+        sb.destroy();
+    }
+    for (sb in rankgrp.members)
+    {
+        sb.destroy();
+    }
+    
+    opts.clear();
+    opsn.clear();
+    opsc.clear();
+    rankgrp.clear();
+    
+    songs = [];
+
+    var leWeek:WeekData = loadedWeeks[i];
+    isCurWeekLocked = isWeekLocked(leWeek.id);
+    
+    for (song in leWeek.songs)
+    {
+        var colors:Array<Int> = Reflect.field(leWeek.extra.songColors, song);
+        if (colors == null || colors.length < 3)
+            colors = [146, 113, 253];
+        
+        var songMeta = (FlxG.assets.exists(Paths.json('gameplay/songs/${song}/default/metadata'))) ? SongMetadata.load(song) : null;
+        songs.push([song, (songMeta != null) ? songMeta.song.title : song, Reflect.field(leWeek.extra.songIcons, song), colors, (songMeta != null) ? songMeta.song.artist : '???']);
+    }
+    
+    imp_freeplay_curSong = 0;
+    for (i in 0...songs.length)
+    {
+        final colors = songs[i][3]; // isWeekLocked ? FlxColor.GRAY :
+        
+        var b:FlxSprite = new FlxSprite(-400, 270 - (imp_freeplay_curSong * 125) + (i * 125)).loadGraphic(Paths.image(ext + 'buttonColor'));
+        b.alpha = (i >= 1 ? 0.5 : 1);
+        b.color = FlxColor.fromRGB(colors[0], colors[1], colors[2]);
+        Reflect.setProperty(b, "ID", i);
+        opts.add(b);
+        
+        final rank:RankIcon = makeRankIcon(b.x + 310, b.y + -25, b);
+        setAccOnRankIcon(rank, Highscore.getScoreRecord(Highscore.getScoreRecordID(songs[i][0], diffs[imp_freeplay_curDiff - 1], null, parentContentPack)).accuracy * 100);
+        rankgrp.add(rank);
+        
+        var s:FlxText = new FlxText(-400, 282 - (imp_freeplay_curSong * 125) + (i * 125), -1, isCurWeekLocked ? '???' : songs[i][1]);
+        s.setFormat(Paths.font("fonts/bahn"), 35, 0xFFFFFF, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+        s.borderSize = 2.5;
+        s.alpha = (i >= 1 ? 0.5 : 1);
+        Reflect.setProperty(s, "ID", i);
+        opsn.add(s);
+        
+        var c:FlxText = new FlxText(-400, 345 - (imp_freeplay_curSong * 125) + (i * 125), -1,
+            (isCurWeekLocked ? 'Complete ' + StringUtil.capitalize(leWeek.id.substr(9)) + ' to unlock this song!' : songs[i][4]));
+        c.setFormat(Paths.font("fonts/bahn"), 20, 0xFFFFFF, FlxTextAlign.LEFT);
+        c.alpha = (i >= 1 ? 0.5 : 1);
+        Reflect.setProperty(c, "ID", i);
+        opsc.add(c);
+    }
+    
+    changeSong(0);
+}
+
+function onUpdate(dt:Float) {
+    starFG.x -= 0.12 * 60 * dt;
+    starBG.x -= 0.04 * 60 * dt;
+    
+    lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, FlxMath.getElapsedLerp(0.6, dt)));
+    if (Math.abs(intendedScore - lerpScore) < 10) lerpScore = intendedScore;
+    scText.text = "Score: " + FlxStringUtil.formatMoney(lerpScore, false, true);
+    
+    if (!controlsLocked) {
+        if (FlxG.keys.justPressed.CONTROL) {
+            persistentUpdate = false;
+            openSubState(new GameplayModifiersMenu());
+        }
+        if (controls.justPressed.check(Control.UI_UP)) changeSong(-1);
+        if (controls.justPressed.check(Control.UI_DOWN)) changeSong(1);
+        if (controls.justPressed.check(Control.UI_LEFT)) changeWeek(-1);
+        if (controls.justPressed.check(Control.UI_RIGHT)) changeWeek(1);
+        if (FlxG.keys.justPressed.E || FlxG.keys.justPressed.Q) changeDiff();
+        if (controls.justPressed.check(Control.ACCEPT)) startSong();
+        if (controls.justPressed.check(Control.BACK))
+        {
+            controlsLocked = true;
+            FlxG.sound.play(Paths.sound('menus/sfx/cancel'));
+            FlxG.switchState(() -> return new TitleState());
+        }
+        if (controls.justPressed.check(Control.RESET))
+        {
+            persistentUpdate = false;
+            openSubState(new ScriptedSubState("ResetScoreSubStateImpostor", [songs[imp_freeplay_curSong][0], imp_freeplay_curDiff]));
+        }
+    }
+}
+
+function onUpdatePost(dt:Float) {
+    for(i in 0...opts.length) {
+        rankgrp.members[i].x = opts.members[i].x + 310;
+        rankgrp.members[i].y = opts.members[i].y + -25;
+        rankgrp.members[i].alpha = opts.members[i].alpha;
+    }
+}
