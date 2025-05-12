@@ -4,11 +4,10 @@
 
 #define iResolution vec3(openfl_TextureSize, 0.)
 #define iChannel0 bitmap
-#define texture flixel_texture2D
 
 // third argument fix
 vec4 flixel_texture2D(sampler2D bitmap, vec2 coord, float bias) {
-	vec4 color = texture2D(bitmap, coord, bias);
+	vec4 color = texture(bitmap, coord, bias);
 	if (!hasTransform && !openfl_HasColorTransform)
 		return color;
 
