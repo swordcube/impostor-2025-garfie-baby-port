@@ -119,6 +119,7 @@ function onCreate() {
         FlxG.sound.music.fadeIn(4, 0, 1);
     }
     TitleState.initialized = true;
+    DiscordRPC.changePresence("Title Screen", null);
 
     var versionString = 'VS IMPOSTOR WEEK 1';
     canSelect = true;
@@ -357,6 +358,15 @@ function onUpdate(dt:Float) {
 }
 
 function moveShitUp(tt:Float = 1) {
+    var selectedItem:String = switch(imp_curSel) {
+        case 0: "Story Mode";
+        case 1: "Freeplay";
+        case 2: "Options";
+        case 3: "Skins";
+        case 4: "Shop";
+    }
+    DiscordRPC.changePresence("Main Menu", 'Selected ${selectedItem}');
+    
     FlxTween.tween(starFG, {alpha: 1}, tt, {ease: FlxEase.quadOut});
     FlxTween.tween(starBG, {alpha: 1}, tt, {ease: FlxEase.quadOut}); // Tween, make it more auraful and hype farmy later
     FlxTween.tween(bg, {y: bg.y - 700}, tt, {ease: FlxEase.quadOut}); // Tween, make it more auraful and hype farmy later
@@ -407,4 +417,12 @@ function changeSel(?by:Int, ?volume:Float) {
     opts.forEach(function(spr:FlxSprite) {
         spr.animation.curAnim.curFrame = (imp_curSel == Reflect.getProperty(spr, "ID") ? 1 : 0);
     });
+    var selectedItem:String = switch(imp_curSel) {
+        case 0: "Story Mode";
+        case 1: "Freeplay";
+        case 2: "Options";
+        case 3: "Skins";
+        case 4: "Shop";
+    }
+    DiscordRPC.changePresence("Main Menu", 'Selected ${selectedItem}');
 }

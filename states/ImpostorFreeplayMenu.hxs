@@ -294,6 +294,7 @@ function refreshDiffText()
         var record = Highscore.getScoreRecord(Highscore.getScoreRecordID(songs[i][i], diffs[imp_freeplay_curDiff - 1], null, parentContentPack));
         setAccOnRankIcon(rankgrp.members[i], record.accuracy * 100);
     }
+    DiscordRPC.changePresence("Freeplay Menu", '${songs[imp_freeplay_curSong][1]} [${(diffs[imp_freeplay_curDiff - 1] == 'hard' ? 'HARD' : 'NORMAL')}]');
 }
 
 function reloadWeekShit() {

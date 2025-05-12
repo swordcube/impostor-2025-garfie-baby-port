@@ -3,6 +3,8 @@ var spriteEvents:FlxTimer;
 var logo:FlxSprite;
 
 function onCreate() {
+    DiscordRPC.changePresence("Starting game", null);
+
     cachedAutoPause = FlxG.autoPause;
 	FlxG.autoPause = false;
 

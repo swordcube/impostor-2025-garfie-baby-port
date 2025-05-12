@@ -32,6 +32,7 @@ function changeSel(by = 0, silent = 1) {
 
 function onCreate() {
     persistentUpdate = true;
+    DiscordRPC.changePresence("Options Menu", null);
 
     var welcomeHereBruh:Array<String> = [
         'Vs Impostor v1.0.2',

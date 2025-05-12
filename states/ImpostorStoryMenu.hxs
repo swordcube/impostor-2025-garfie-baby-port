@@ -262,6 +262,9 @@ function reloadDiff() {
     */
     // the math is weekAccuracy value divided by the amount of songs in the week
     setAccOnRankIcon(weekRank, record.accuracy * 100);
+
+    var selectedItem:String = '${StringUtil.capitalize(leWeek.id.substr(9))} [${(diffs[imp_story_curDiff - 1] == 'hard' ? 'HARD' : 'NORMAL')}]';
+    DiscordRPC.changePresence("Story Menu", '${selectedItem}');
 }
 
 function changeDiff() {
