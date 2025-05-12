@@ -35,6 +35,9 @@ function newBGSprite(img:String, ?x:Float, ?y:Float) {
 }
 
 function onCreatePost() {
+    if(doFunnyDeath)
+        return;
+
     defeat = newBGSprite("gameplay/death/defeat effect", character.x + 180, character.y + 520).spr;
     defeat.x -= defeat.width * .5;
     defeat.scale.set(.044, 1);
@@ -80,15 +83,24 @@ function onCreatePost() {
 }
 
 function onUpdate(dt:Float) {
+    if(doFunnyDeath)
+        return;
+
     if (character.animation.curAnim.curFrame >= 12 && !camera.followEnabled)
         camera.followEnabled = true;
 }
 
 function onDeathLoopStart() {
+    if(doFunnyDeath)
+        return;
+
     FlxTween.tween(uiCam, {alpha: 1}, 0.35);
     FlxTween.tween(FlxG.camera, { zoom: 0.75 }, 4, { ease: FlxEase.smootherStepInOut });
 }
 
 function onRetry() {
+    if(doFunnyDeath)
+        return;
+
     FlxTween.tween(uiCam, {alpha: 0}, 0.35);
 }
