@@ -31,7 +31,7 @@ function lookAtTarget(char) {
             // trace("blah this guy fuckin sucks");
             idleSuffix = "-left";
     }
-    animation.play("turn" + idleSuffix);
+    playAnim("turn" + idleSuffix, "dance");
     
     curDanceStep = 0;
     data.danceSteps = ["danceLeft" + idleSuffix, "danceRight" + idleSuffix];
