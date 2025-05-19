@@ -244,10 +244,9 @@ function onUpdate(dt:Float) {
             close();
         }
     } else {
-        if(changingBind && !pressedKeyYet && FlxG.keys.justPressed.ANY)
+        if(changingBind && !pressedKeyYet && FlxG.keys.justPressed.ANY) {
             pressedKeyYet = true;
-        
-        if(changingBind && pressedKeyYet && FlxG.keys.justReleased.ANY) {
+            
             bindPrompt.exists = false;
             stopChangingBind();
         }
