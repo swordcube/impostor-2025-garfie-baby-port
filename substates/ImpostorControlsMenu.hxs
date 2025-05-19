@@ -344,7 +344,7 @@ function startChangingBind():Void {
 }
 
 function stopChangingBind():Void {
-    var newKey:FlxKey = FlxG.keys.firstJustReleased();
+    var newKey:FlxKey = FlxG.keys.firstJustPressed();
     switch(newKey) {
         case FlxKey.NONE:
             return;
