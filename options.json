@@ -1,0 +1,35 @@
+{
+    "pages": ["Impostor Options"],
+    "options": [
+        {
+            "name": "Custom Menus",
+            "description": "Changes whether or not the V.S. Impostor menus will be\ndisplayed instead of the normal base game menus.",
+
+            "id": "customMenus",
+            "defaultValue": true,
+            
+            "type": "bool",
+            "page": "Impostor Options"
+        },
+        {
+            "name": "NMV FPS Display",
+            "description": "Changes whether or not the FPS counter should look like the Nightmare Vision variant.",
+
+            "id": "nmvFPSDisplay",
+            "defaultValue": true,
+            
+            "type": "bool",
+            "page": "Impostor Options"
+        },
+        {
+            "name": "Ranks Instead of Accuracy",
+            "description": "Changes whether or not ranks will be displayed\ninstead of accuracy during gameplay.",
+
+            "id": "accuracyToRanks",
+            "defaultValue": true,
+            
+            "type": "bool",
+            "page": "Impostor Options"
+        }
+    ]
+}

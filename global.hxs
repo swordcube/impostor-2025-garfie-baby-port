@@ -1,3 +1,5 @@
+importScript("globals/nmv fps");
+
 static var imp_didSplash:Bool = false;
 static var imp_alreadyBeenInMenu:Bool = false;
 static var imp_titleTransitioning:Bool = false;
@@ -20,18 +22,21 @@ function getStateRedirects() {
 }
 
 function onStateCreate(state) {
-    var redirect = getStateRedirects().get(Type.getClass(state));
-    if(redirect != null) {
-        var constructor:Function = null;
-        if(redirect is String)
-            constructor = () -> return new ScriptedState(redirect);
-        else
-            constructor = () -> return Type.createInstance(redirect, []);
-        
-        var newState = constructor();
-        Reflect.setProperty(newState, "_constructor", constructor); // constructor must be set otherwise FlxG.resetState won't work
-        
-        FlxG.game._state = newState;
-        FlxG.game._nextState = null; // just in case
+    final options = Options.customOptions.get(parentContentPack);
+    if(options.get("customMenus")) {
+        var redirect = getStateRedirects().get(Type.getClass(state));
+        if(redirect != null) {
+            var constructor:Function = null;
+            if(redirect is String)
+                constructor = () -> return new ScriptedState(redirect);
+            else
+                constructor = () -> return Type.createInstance(redirect, []);
+            
+            var newState = constructor();
+            Reflect.setProperty(newState, "_constructor", constructor); // constructor must be set otherwise FlxG.resetState won't work
+            
+            FlxG.game._state = newState;
+            FlxG.game._nextState = null; // just in case
+        }
     }
 }

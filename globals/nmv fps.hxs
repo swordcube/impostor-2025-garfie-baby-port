@@ -25,11 +25,7 @@ var lastTimeStamp:Float = 0;
 
 var deltaTimeout:Float = 100;
 
-function onCreate() {
-    if(!Options.fpsCounter) {
-        closeScript();
-        return;
-    }
+function new() {
     Main.statsDisplay.visible = false;
 
     shit = new Sprite();
@@ -90,9 +86,13 @@ function updateText() {
         text.textColor = 0xFFFF0000;
     else
         text.textColor = 0xFFFFFFFF;
+
+    final options = Options.customOptions.get(parentContentPack);
+    shit.visible = Options.fpsCounter && options.get("nmvFPSDisplay") == true;
+    Main.statsDisplay.visible = Options.fpsCounter && options.get("nmvFPSDisplay") != true;
 }
 
-function onDestroy() {
+function onClose() {
     shit.removeEventListener("enterFrame", onEnterFrame);
     shit.removeChild(underlay);
     shit.removeChild(text);

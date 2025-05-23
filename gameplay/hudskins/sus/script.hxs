@@ -108,9 +108,10 @@ function updatePlayerStats(stats) {
         else if (stats.accuracy >= 0.6) str = 'D';
         else str = 'F';
     }
+    final options = Options.customOptions.get(parentContentPack);
     final tempScore:String = 'Score: ' + FlxStringUtil.formatMoney(stats.score, false) + '      '
         + 'Misses: ' + stats.misses + '      '
-        + 'Rank: ' + str;
+        + ((options.get("accuracyToRanks")) ? 'Rank: ' + str : 'Accuracy: ' + FlxMath.roundDecimal(stats.accuracy * 100, 2) + '%');
         
     scoreTxt.text = tempScore + "\n";
     botplayTxt.visible = playField.playerStrumLine.botplay;

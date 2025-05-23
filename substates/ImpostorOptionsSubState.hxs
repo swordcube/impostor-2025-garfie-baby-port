@@ -157,8 +157,46 @@ function new(_optionsToSetup:String) {
                     }
                 }
             ];
+        default:
+            final split:Array<String> = _optionsToSetup.split("://");
+            if(split.length > 1) {
+                optionsArray = [];
+
+                final page:String = split[1];
+                _optionsToSetup = page;
+
+                final configs = Options.customOptionConfigs.get(split[0]);
+                for(config in configs) {
+                    if(!config.showInMenu)
+                        continue;
+
+                    optionsArray.push({
+                        name: config.name,
+                        description: config.description,
+                    
+                        id: config.id,
+                        type: config.type
+                    });
+                }
+            }
     }
     title = _optionsToSetup;
+}
+
+function getOptionValue(id:String) {
+    final split:Array<String> = id.split("://");
+    if(split.length > 1)
+        return Options.customOptions.get(split[0]).get(split[1]);
+
+    return Reflect.getProperty(Options, id);
+}
+
+function setOptionValue(id:String, value:Dynamic) {
+    final split:Array<String> = id.split("://");
+    if(split.length > 1)
+        Options.customOptions.get(split[0]).set(split[1], value);
+    else
+        Reflect.setProperty(Options, id, value);
 }
 
 function onCreate() {
@@ -194,12 +232,12 @@ function onCreate() {
             checkbox.loadGraphic(Paths.image('menus/options/impastacheckbox'), true, 30, 30);
             checkbox.animation.add('off', [0], 0, false);
             checkbox.animation.add('on', [1], 0, false);
-            checkbox.animation.play((Reflect.getProperty(Options, optionsArray[i].id) == true) ? 'on' : 'off');
+            checkbox.animation.play((getOptionValue(optionsArray[i].id) == true) ? 'on' : 'off');
             checkbox.x -= checkbox.width;
             Reflect.setProperty(checkbox, "ID", i);
             checkboxGroup.add(checkbox);
         } else if (optionsArray[i].type != 'button' && optionsArray[i].type != 'label') {
-            var valueText:FlxText = new FlxText(500,optionText.y, 640, Std.string(Reflect.getProperty(Options, optionsArray[i].id)));// optionText.width + 60);
+            var valueText:FlxText = new FlxText(500,optionText.y, 640, Std.string(getOptionValue(optionsArray[i].id)));// optionText.width + 60);
             valueText.setFormat(Paths.font("fonts/bahn"), 25, 0x62E0CF, FlxTextAlign.RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
             //valueText.copyAlpha = true;
             Reflect.setProperty(valueText, "ID", i);
@@ -230,8 +268,8 @@ function onUpdate(dt:Float) {
     switch(curOption.type) {
         case "bool":
             if(controls.justPressed.check(Control.ACCEPT)) {
-                var newValue:Bool = !(Reflect.getProperty(Options, curOption.id) == true);
-                Reflect.setProperty(Options, curOption.id, newValue);
+                var newValue:Bool = !(getOptionValue(curOption.id) == true);
+                setOptionValue(curOption.id, newValue);
                 
                 for (checkbox in checkboxGroup) {
                     if (Reflect.getProperty(checkbox, "ID") == curSelected)
@@ -253,13 +291,13 @@ function onUpdate(dt:Float) {
             var pressed:Bool = left || right;
 
             if(justPressed || holdTimer >= 0.5) {
-                var value:Float = FlxMath.bound(Reflect.getProperty(Options, curOption.id) + (curOption.params.step * ((left) ? -1 : 1)), curOption.params.min, curOption.params.max);
+                var value:Float = FlxMath.bound(getOptionValue(curOption.id) + (curOption.params.step * ((left) ? -1 : 1)), curOption.params.min, curOption.params.max);
                 if(!isInt)
                     value = FlxMath.roundDecimal(value, curOption.params.decimals);
                 else
                     value = Std.int(value);
 
-                Reflect.setProperty(Options, curOption.id, value);
+                setOptionValue(curOption.id, value);
                 for (text in grpTexts) {
                     if (Reflect.getProperty(text, "ID") == curSelected)
                         text.text = Std.string(value);
@@ -285,10 +323,10 @@ function onUpdate(dt:Float) {
             var justPressed:Bool = controls.justPressed.check(Control.UI_LEFT) || controls.justPressed.check(Control.UI_RIGHT);
 
             if(justPressed) {
-                var value:String = Reflect.getProperty(Options, curOption.id);
+                var value:String = getOptionValue(curOption.id);
                 var itemIndex:Int = FlxMath.wrap(items.indexOf(value) + ((left) ? -1 : 1), 0, items.length - 1);
     
-                Reflect.setProperty(Options, curOption.id, items[itemIndex]);
+                setOptionValue(curOption.id, items[itemIndex]);
                 for (text in grpTexts) {
                     if (Reflect.getProperty(text, "ID") == curSelected)
                         text.text = items[itemIndex];

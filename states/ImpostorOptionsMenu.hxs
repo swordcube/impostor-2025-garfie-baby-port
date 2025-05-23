@@ -34,6 +34,10 @@ function onCreate() {
     persistentUpdate = true;
     DiscordRPC.changePresence("Options Menu", null);
 
+    for(pack => pages in Options.customPages) {
+        for(page in pages)
+            buttons.push([116, buttons[buttons.length -1][1] + 75, 1, '${pack}://${page}']);
+    }
     var welcomeHereBruh:Array<String> = [
         'Vs Impostor v1.0.2',
 		'in a good world this mods name is still updog'
@@ -83,7 +87,8 @@ function onCreate() {
         but.animation.play('idle');
         Reflect.setProperty(but, "ID", i);
         //  It's not letting me do it the normal and not stupid way
-        var txt:FlxText = new FlxText(buttons[i][0] + 9.4, buttons[i][1] + 11.35, -1, buttons[i][3]);
+        var split:Array<String> = buttons[i][3].split("://");
+        var txt:FlxText = new FlxText(buttons[i][0] + 9.4, buttons[i][1] + 11.35, -1, (split.length > 1) ? split[1] : buttons[i][3]);
         txt.setFormat(Paths.font("fonts/notosans"), 35, FlxColor.WHITE, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
         txt.borderSize = 2.5;
         Reflect.setProperty(txt, "ID", i);
@@ -112,6 +117,8 @@ function doItBruh() {
             openSubState(new ScriptedSubState("ImpostorOptionsSubState", ["Miscellanous"]));
         case 4:
             openSubState(new ScriptedSubState("ImpostorControlsMenu"));
+        default:
+            openSubState(new ScriptedSubState("ImpostorOptionsSubState", [buttons[curSel][3]]));
     }
 }
 
