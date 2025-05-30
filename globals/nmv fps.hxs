@@ -80,7 +80,7 @@ function onEnterFrame(e) {
 }
 
 function updateText() {
-    text.text = "FPS: " + currentFPS + " • Memory: " + FlxStringUtil.formatBytes(MemoryUtil.currentMemUsage());
+    text.text = "FPS: " + currentFPS + " • Memory: " + FlxStringUtil.formatBytes(MemoryUtil.currentAppMemUsage());
 
 	if(currentFPS < FlxG.drawFramerate * 0.5)
         text.textColor = 0xFFFF0000;
