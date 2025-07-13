@@ -17,10 +17,10 @@ function onCreate() {
 }
 
 function generateHealthBar() {
-    healthBar = new ImageBar(0, !Options.downscroll ? 641 : 56, getHUDImage('healthBarGuide'), function() return playField.stats.health, playField.stats.minHealth, playField.stats.maxHealth);
+    healthBar = new ImageBar(0, !Options.downscroll ? 641 : 56, getHUDImage('healthBarGuide'), function() return playField.stats.displayedHealth, playField.stats.minHealth, playField.stats.maxHealth);
     healthBar.screenCenter(FlxAxes.X);
     healthBar.leftToRight = false;
-    healthBar.percent = (playField.stats.health / playField.stats.maxHealth) * 100;
+    healthBar.percent = (playField.stats.displayedHealth / playField.stats.maxHealth) * 100;
     add(healthBar);
     
     tablet = new FlxSprite(-46, !Options.downscroll ? -38 : -143);

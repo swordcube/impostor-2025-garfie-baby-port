@@ -54,7 +54,7 @@ function onEnterFrame(e) {
     final now:Float = Timer.stamp() * 1000;
     
     framesPassed++;
-    timer += (now - lastTimeStamp);
+    timer += Math.max(now - lastTimeStamp, 0);
     
     lastTimeStamp = now;
     

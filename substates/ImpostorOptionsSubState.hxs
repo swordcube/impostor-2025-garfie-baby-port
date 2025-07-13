@@ -64,6 +64,22 @@ function new(_optionsToSetup:String) {
 
                     params: {min: 5, max: 180, step: 5}
                 },
+                {
+                    name: "Hitsound Behavior",
+                    description: "Changes how the hitsounds behave during gameplay.",
+        
+                    id: "hitsoundBehavior",
+                    type: "list",
+                    
+                    params: {items: ["Note Hit", "Key Press"]}
+                },
+                {
+                    name: "Hitsound Volume",
+                    description: "Changes how loud the hitsounds are during gameplay.",
+        
+                    id: "hitsoundVolume",
+                    type: "percent"
+                },
             ];
         case "Appearance":
             optionsArray = [
@@ -124,10 +140,10 @@ function new(_optionsToSetup:String) {
                     type: "bool"
                 },
                 {
-                    name: "Multicore Preloading",
-                    description: "Whether or not the game should use multiple threads to preload gameplay assets.\nTurn this back off if you're experiencing issues preloading images/sounds.",
+                    name: "Loading Screen",
+                    description: "Whether or not the game should display\na loading screen while loading into gameplay.",
                 
-                    id: "multicoreLoading",
+                    id: "loadingScreen",
                     type: "bool"
                 },
                 {
@@ -237,7 +253,15 @@ function onCreate() {
             Reflect.setProperty(checkbox, "ID", i);
             checkboxGroup.add(checkbox);
         } else if (optionsArray[i].type != 'button' && optionsArray[i].type != 'label') {
-            var valueText:FlxText = new FlxText(500,optionText.y, 640, Std.string(getOptionValue(optionsArray[i].id)));// optionText.width + 60);
+            var optionStr:String = null;
+            switch(optionsArray[i].type) {
+                case "percent":
+                    optionStr = Std.string(Math.floor(getOptionValue(optionsArray[i].id) * 100)) + "%";
+                
+                default:
+                    optionStr = Std.string(getOptionValue(optionsArray[i].id));
+            }
+            var valueText:FlxText = new FlxText(500,optionText.y, 640, optionStr);// optionText.width + 60);
             valueText.setFormat(Paths.font("fonts/bahn"), 25, 0x62E0CF, FlxTextAlign.RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
             //valueText.copyAlpha = true;
             Reflect.setProperty(valueText, "ID", i);
@@ -301,6 +325,36 @@ function onUpdate(dt:Float) {
                 for (text in grpTexts) {
                     if (Reflect.getProperty(text, "ID") == curSelected)
                         text.text = Std.string(value);
+                }
+                if(justPressed)
+                    FlxG.sound.play(Paths.sound('menus/sfx/scroll'));
+                
+                if(holdTimer >= 0.5)
+                    holdTimer = 0.45;
+
+                if(curOption.callback != null)
+                    curOption.callback(value);
+            }
+            if(pressed)
+                holdTimer += dt;
+            else
+                holdTimer = 0;
+
+        case "percent":
+            var left:Bool = controls.pressed.check(Control.UI_LEFT);
+            var right:Bool = controls.pressed.check(Control.UI_RIGHT);
+
+            var justPressed:Bool = controls.justPressed.check(Control.UI_LEFT) || controls.justPressed.check(Control.UI_RIGHT);
+            var pressed:Bool = left || right;
+
+            if(justPressed || holdTimer >= 0.5) {
+                var value:Float = FlxMath.bound(getOptionValue(curOption.id) + (0.01 * ((left) ? -1 : 1)), 0, 1);
+                value = FlxMath.roundDecimal(value, 2);
+
+                setOptionValue(curOption.id, value);
+                for (text in grpTexts) {
+                    if (Reflect.getProperty(text, "ID") == curSelected)
+                        text.text = Std.string(Math.floor(value * 100)) + "%";
                 }
                 if(justPressed)
                     FlxG.sound.play(Paths.sound('menus/sfx/scroll'));

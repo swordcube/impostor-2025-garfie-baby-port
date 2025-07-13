@@ -4,5 +4,5 @@ function onPreloadNoteSkin(assets) {
 }
 
 function onCreatePost() {
-    playField.opponentStrumLine.skin = "sus_red";
+    playField.getFirstStrumLine().skin = "sus_red";
 }
