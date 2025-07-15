@@ -65,6 +65,15 @@ function new(_optionsToSetup:String) {
                     params: {min: 5, max: 180, step: 5}
                 },
                 {
+                    name: "Hitsound Type",
+                    description: "Change the kind of hitsounds to use during gameplay.",
+        
+                    id: "hitsoundType",
+                    type: "list",
+                    
+                    params: {items: ["osu!", "tump"]}
+                },
+                {
                     name: "Hitsound Behavior",
                     description: "Changes how the hitsounds behave during gameplay.",
         
