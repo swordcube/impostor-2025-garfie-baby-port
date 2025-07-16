@@ -121,6 +121,20 @@ function new(_optionsToSetup:String) {
                     callback: (value:Dynamic) -> Main.statsDisplay.visible = value
                 },
                 {
+                    name: "Intensive Shaders",
+                    description: "Whether or not intensive shaders can be used.\n\nThese kinds of shaders can cause performance issues on lower end machines,\nSo you may want to turn this off!\n\nThis may not work for all mods, be warned!",
+                
+                    id: "intensiveShaders",
+                    type: "bool"
+                },
+                {
+                    name: "Lasagna",
+                    description: "Garfield's Dinner",
+                
+                    id: "lasagna",
+                    type: "bool"
+                },
+                {
                     name: "HUD Type",
                     description: "Changes how the HUD looks during gameplay.\nThis only works if the song has the default HUD skin!",
         
